@@ -2,7 +2,7 @@ require('dotenv').config()
 
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 3001
 const helApi = require('./service/helsinkiApi');
 const graphqlHTTP = require('express-graphql');
 const MyGraphQLSchema = require('./schema/schema');
