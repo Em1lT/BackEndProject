@@ -1,7 +1,8 @@
 const mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-mongoose.connect(process.env.DB_HOST, {
+    console.log(process.env.DB_URL);
+mongoose.connect(process.env.DB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
