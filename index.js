@@ -3,31 +3,28 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const port = 3001
-const helApi = require('./service/helsinkiApi');
 const graphqlHTTP = require('express-graphql');
-const MyGraphQLSchema = require('./schema/schema');
+const rootSchema = require('./schema/rootSchema');
+const helsinkiApiController = require('./Controllers/helsinkiApiController');
+const weatherController = require('./Controllers/weatherController');
 const db = require('./service/db');
 
+//helsinkiApiController
+app.get('/update', helsinkiApiController.update);
+app.get('/delete', helsinkiApiController.DeleteOldOnes);
+app.get('/test', helsinkiApiController.getAll);
 
-app.get('/', (req, res) => res.send('Hello World!'))
-app.get('/update', async (req, res) => {
-    let data = await helApi.getAll()
-    let response = await db.insertMany(data);
-    console.log("response");
-    res.json(data);
-});
+//Update weather to the db
+app.get('/weather', weatherController.update);
 
-app.get('/test', async (req, res) => {
-
-    let response = await db.getAll();
-    res.json(response);
-});
-
-
+//1.Create Mongoose model from event Schema
+//2.Create Graphql schema for events, weather
+//3. Model the reserved event.
+//4. HSL 
 app.use(
     '/graphql',
     graphqlHTTP({
-        schema: MyGraphQLSchema,
+        schema: rootSchema,
         graphiql: true,
     }),
 );
