@@ -38,7 +38,7 @@ const weather = new Schema({
     clouds: Number,
 
     // Forecast period start unix timestamp (UTC)
-    ts: Number,
+    ts: Date,
 
     // Sunrise time unix timestamp (UTC)
     sunrise_ts: Number,

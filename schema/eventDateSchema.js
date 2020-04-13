@@ -34,8 +34,9 @@ module.exports = new GraphQLObjectType({
                 }
             },
             resolve: async (parent, args) => {
+
                 return await weatherController.getOne(parent.starting_day, args.city)
-            }
+                }
         }
     })
 })

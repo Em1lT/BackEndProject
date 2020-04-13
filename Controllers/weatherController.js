@@ -1,34 +1,26 @@
 'use strict';
+const moment = require('moment');
 const weatherApi = require('../service/WeatherService');
 const weatherModel = require('../model/weatherModel');
 const placeModel = require('../model/placeModel');
 
 const getOne = async (day, city) => {
+    let rightWeather;
+    let goal = moment(day.getTime()).startOf('day').format();
 
-    let place = await placeModel.findOne({city_name: city}).populate({path:'weatherIds'})  
- /*   let place = await placeModel.findOne({city_name: city}).populate({
-        path:'weatherIds',
-        match: {
-            ts: {
-                $gte: ts.getTime() - (12 * 60 * 60 * 1000),
-                $lt: ts.getTime() + (12 * 60 * 60 * 1000)
-            }
+    let place = await placeModel.findOne({
+        city_name: city
+    }).populate({
+        path: 'weatherIds',
+    })
+
+    place.weatherIds.map((item) => {
+        let startOfTheDay = moment(new Date(item.ts.getTime() * 1000)).startOf('day').format();
+        if(goal == startOfTheDay) {
+            rightWeather = item;
         }
-    })*/
-
-
-    console.log(day);
-    //Tässä jotain paskaa???
-    const closest = await place.weatherIds.reduce((a, b) => {
-        console.log(a.ts)
-        console.log(b.ts)
-        return Math.abs(b.ts - day) < Math.abs(a.ts - day) ? b : a;
-    });
-    
-    //const output = await place.weatherIds.reduce((prev, curr) => Math.abs(curr - day) < Math.abs(prev - day) ? curr : prev);
-    //let weather = await weatherModel.findById({_id: place.weatherIds[day]})
-    //let weather = await weatherModel.find({"ts": { $gte: day, $lt: day}}).sort({"ts":1}).limit(1);
-    return closest;
+    })
+    return rightWeather;
 }
 
 const update = async (req, res) => {
@@ -46,14 +38,20 @@ const update = async (req, res) => {
         weatherIds: ids
     })
 
-    let findPlace = await placeModel.findOne({city_name: weatherData.data.city_name})
+    let findPlace = await placeModel.findOne({
+        city_name: weatherData.data.city_name
+    })
     let dbResponse;
-    
-    if(!findPlace){
+
+    if (!findPlace) {
         dbResponse = savedWeathers.save();
         res.json("Weather saved");
     } else {
-        dbResponse = await placeModel.updateOne({city_name: weatherData.data.city_name}, {weatherIds: ids})
+        dbResponse = await placeModel.updateOne({
+            city_name: weatherData.data.city_name
+        }, {
+            weatherIds: ids
+        })
         console.log(dbResponse);
         res.json("Weather updated");
     }
@@ -80,7 +78,7 @@ const createModel = (city, weatherDay) => {
 
     let weatherObj = {
         icon: weatherDay.weather.icon,
-        code:weatherDay.weather.code,
+        code: weatherDay.weather.code,
         description: weatherDay.weather.description
     }
     let weather = new weatherModel({

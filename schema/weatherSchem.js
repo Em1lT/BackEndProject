@@ -47,7 +47,7 @@ module.exports = new GraphQLObjectType({
             type: GraphQLInt
         },
         ts: {
-            type: GraphQLInt
+            type: GraphQLString
         },
         sunrise_ts: {
             type: GraphQLInt
