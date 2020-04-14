@@ -1,5 +1,6 @@
 const addressSchema = require('./addressSchema')
-
+const hslSchema = require('./hslSchema')
+const hslController = require('../Controllers/hslController')
 
 const {
     GraphQLObjectType,
@@ -19,6 +20,16 @@ module.exports = new GraphQLObjectType({
         },
         address: {
             type: addressSchema
+        },
+        route: {
+            type:hslSchema,
+            resolve: async (parent, args) => {
+                let from = {lat: "60.220127", lon: "24.785761"};
+                let to = {lat: parent.lat, lon: parent.lon};
+                let data =await hslController.getRoute(from, to);
+                console.log(JSON.stringify(data));
+                return data;
+            },
         }
     })
 })

@@ -7,12 +7,13 @@ const graphqlHTTP = require('express-graphql');
 const rootSchema = require('./schema/rootSchema');
 const helsinkiApiController = require('./Controllers/helsinkiApiController');
 const weatherController = require('./Controllers/weatherController');
+const hslApiController = require('./Controllers/hslController');
+
 const db = require('./service/db');
 
 //helsinkiApiController
 app.get('/update', helsinkiApiController.update);
 app.get('/delete', helsinkiApiController.DeleteOldOnes);
-app.get('/test', helsinkiApiController.getAll);
 
 //Update weather to the db
 app.get('/weather', weatherController.update);
