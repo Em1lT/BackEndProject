@@ -24,10 +24,10 @@ module.exports = new GraphQLObjectType({
         route: {
             type:hslSchema,
             resolve: async (parent, args) => {
+                //Get this from the serverside. with args 
                 let from = {lat: "60.220127", lon: "24.785761"};
                 let to = {lat: parent.lat, lon: parent.lon};
                 let data =await hslController.getRoute(from, to);
-                console.log(JSON.stringify(data));
                 return data;
             },
         }
