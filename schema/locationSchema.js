@@ -4,7 +4,9 @@ const hslController = require('../Controllers/hslController')
 
 const {
     GraphQLObjectType,
+    GraphQLFloat,
     GraphQLString,
+    GraphQlNonNull
 } = require(
     'graphql');
 
@@ -23,9 +25,17 @@ module.exports = new GraphQLObjectType({
         },
         route: {
             type:hslSchema,
+            args: {
+                lat: {
+                    type: GraphQLFloat
+
+                },
+                lon: {
+                    type: GraphQLFloat
+                }
+            },
             resolve: async (parent, args) => {
-                //Get this from the serverside. with args 
-                let from = {lat: "60.220127", lon: "24.785761"};
+                let from = {lat: args.lat, lon: args.lon};
                 let to = {lat: parent.lat, lon: parent.lon};
                 let data =await hslController.getRoute(from, to);
                 return data;
