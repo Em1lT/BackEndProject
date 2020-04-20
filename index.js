@@ -3,6 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const port = 3001
+const cors = require('cors');
 const graphqlHTTP = require('express-graphql');
 const rootSchema = require('./schema/rootSchema');
 const helsinkiApiController = require('./Controllers/helsinkiApiController');
@@ -11,6 +12,12 @@ const hslApiController = require('./Controllers/hslController');
 
 const db = require('./service/db');
 
+app.use(cors());
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "YOUR-DOMAIN.TLD"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 //helsinkiApiController
 app.get('/update', helsinkiApiController.update);
 app.get('/delete', helsinkiApiController.DeleteOldOnes);

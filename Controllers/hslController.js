@@ -5,8 +5,8 @@ const getRoute = async (from, to) => {
   const query =
     `{
         plan(
-          from: {lat:` + from.lat + `, lon:` + from.lon + `}
-          to: {lat: ` + to.lat + `, lon:` + to.lon + `}
+          from: {lat: ${from.lat} , lon: ${from.lon}}
+          to: {lat: ${to.lat}, lon: ${to.lon}}
           numItineraries: 1
         ) {
           itineraries {
