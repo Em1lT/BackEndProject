@@ -1,5 +1,5 @@
 const helsinkiApiController = require('../Controllers/helsinkiApiController');
-const eventSchema = require('./eventSchema')
+const eventSchema = require('./event/eventSchema')
 
 const {
     GraphQLObjectType,
