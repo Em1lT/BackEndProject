@@ -10,6 +10,9 @@ const getRoute = async (from, to) => {
           numItineraries: 1
         ) {
           itineraries {
+            startTime
+            endTime
+            duration
             legs {
               startTime
               endTime
