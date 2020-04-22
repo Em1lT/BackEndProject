@@ -4,6 +4,7 @@ const saltRound= 12;
 const helsinkiApiController = require("../Controllers/helsinkiApiController");
 const eventSchema = require("./event/eventSchema");
 const userSchema = require('./user/userSchema');
+const authController = require('../Controllers/authController');
 const user = require('../model/userModel');
 
 const {
@@ -49,9 +50,15 @@ const RootQuery = new GraphQLObjectType({
         return await helsinkiApiController.getOne(args.name);
       },
     },
+  },
+});
+
+const Mutation = new GraphQLObjectType ({
+  name: 'MutationType',
+  fields: () => ({
     user_register: {
       type: userSchema,
-      description: 'Register user.',
+      description: 'Register a new user.',
       args: {
         username: {type: new GraphQLNonNull (GraphQLString)},
         email: {type: new GraphQLNonNull (GraphQLString)},
@@ -73,10 +80,33 @@ const RootQuery = new GraphQLObjectType({
           return new Error(e.message);
         }
       }
+    },
+    user_login: {
+      type: userSchema,
+      description: 'User login to receive token.',
+      args: {
+        username: {type: new GraphQLNonNull(GraphQLString)},
+        password: {type: new GraphQLNonNull(GraphQLString)},
+      },
+      resolve: async (parent, args, {req, res}) => {
+        req.body = args;
+        try {
+          const auth = await authController.login(req, res);
+          console.log({user: auth.user.username, token: auth.token});
+          return {
+            id: auth.user._id,
+            ...auth.user,
+            token: auth.token,
+          }
+        } catch (e) {
+          throw new Error(e)
+        }
+      }
     }
-  },
-});
+  })
+})
 
 module.exports = new GraphQLSchema({
   query: RootQuery,
+  mutation: Mutation,
 });
