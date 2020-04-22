@@ -1,3 +1,5 @@
+const weatherObj = require('./weatherObj');
+
 const {
     GraphQLObjectType,
     GraphQLID,
@@ -117,6 +119,9 @@ module.exports = new GraphQLObjectType({
         },
         city: {
             type: GraphQLString
+        },
+        weather: {
+            type: weatherObj
         }
     }),
 })
