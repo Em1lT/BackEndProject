@@ -9,6 +9,7 @@ const user = require('../model/userModel');
 
 const {
   GraphQLObjectType,
+  GraphQLID,
   GraphQLList,
   GraphQLSchema,
   GraphQLInt,
@@ -50,13 +51,28 @@ const RootQuery = new GraphQLObjectType({
         return await helsinkiApiController.getOne(args.name);
       },
     },
+    UserGet: {
+      type: userSchema,
+      description: 'Get user by id.',
+      args: {
+        id: {type: new GraphQLNonNull (GraphQLID)}
+      },
+      resolve: async (parent, args) => {
+        try {
+          return await user.findById(args.id);
+        } catch (e) {
+          return new Error(e.message);
+        }
+      }
+    }
   },
 });
 
 const Mutation = new GraphQLObjectType ({
   name: 'MutationType',
+  description: 'Mutate user.',
   fields: () => ({
-    user_register: {
+    UserRegister: {
       type: userSchema,
       description: 'Register a new user.',
       args: {
@@ -81,7 +97,7 @@ const Mutation = new GraphQLObjectType ({
         }
       }
     },
-    user_login: {
+    UserLogin: {
       type: userSchema,
       description: 'User login to receive token.',
       args: {
@@ -100,6 +116,41 @@ const Mutation = new GraphQLObjectType ({
           }
         } catch (e) {
           throw new Error(e)
+        }
+      }
+    },
+    // TODO: add checkAuth
+    UserModify: {
+      type:  userSchema,
+      description: 'Modify users email, address or password. Need user id.',
+      args: {
+        id: {type: new GraphQLNonNull(GraphQLID)},
+        email: {type: GraphQLString},
+        address: {type: GraphQLString},
+        password: {type: GraphQLString},
+      },
+      // resolve: async (parent, args, {req, res, checkAuth}
+      resolve: async (parent, args, {req, res}) => {
+        try {
+          args.password = await bcrypt.hash(args.password, saltRound);
+          return await user.findByIdAndUpdate(args.id, args, {new:true});
+        } catch (e) {
+          return new Error(e.message);
+        }
+      }
+    },
+    UserDelete: {
+      type: userSchema,
+      description: 'Delete user. Need user id.',
+      args: {
+        id: {type: new GraphQLNonNull(GraphQLID)}
+      },
+      resolve: async (parent, args, {req, res}) => {
+        try {
+          console.log("Deleted user with id: ", args.id)
+          return await user.findByIdAndDelete(args.id);
+        } catch (e) {
+          return new Error(e.message);
         }
       }
     }
