@@ -4,9 +4,30 @@ const weatherApi = require('../service/WeatherService');
 const weatherModel = require('../model/weatherModel');
 const placeModel = require('../model/placeModel');
 
-const getOne = async (day, city) => {
-    let rightWeather;
-    let goal = moment(day.getTime()).startOf('day').format();
+function getDates(startDate, stopDate) {
+    var dateArray = [];
+    var currentDate = moment(startDate);
+    var stopDate = moment(stopDate);
+    while (currentDate <= stopDate) {
+        dateArray.push( moment(currentDate).format('YYYY-MM-DD') )
+        currentDate = moment(currentDate).add(1, 'days');
+    }
+    return dateArray;
+}
+
+const getOne = async (startDay, endingDay, city) => {
+
+    let rightWeather = [];
+    let goal = moment(startDay.getTime()).startOf('day').format();
+    let now = moment(new Date()).startOf('day').format();
+    
+    let dates;
+
+    if(goal < now) {
+        dates = await getDates(now, endingDay);
+    } else {
+        dates = await getDates(startDay, endingDay);
+    }
 
     let place = await placeModel.findOne({
         city_name: city
@@ -14,11 +35,13 @@ const getOne = async (day, city) => {
         path: 'weatherIds',
     })
 
-    place.weatherIds.map((item) => {
-        let startOfTheDay = moment(new Date(item.ts.getTime() * 1000)).startOf('day').format();
-        if(goal == startOfTheDay) {
-            rightWeather = item;
-        }
+    dates.map((day) => {
+        place.weatherIds.map((item) => {
+            let startOfTheDay = moment(new Date(item.ts.getTime() * 1000)).startOf('day').format();
+            if(moment(day).startOf('day').format() == startOfTheDay) {
+                rightWeather.push(item);
+            }
+        })
     })
     return rightWeather;
 }

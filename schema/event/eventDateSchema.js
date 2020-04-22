@@ -5,7 +5,7 @@ const {
     GraphQLObjectType,
     GraphQLString,
     GraphQLInt,
-
+    GraphQLList
 } = require(
     'graphql');
 
@@ -24,7 +24,7 @@ module.exports = new GraphQLObjectType({
             type: GraphQLString
         },
         weather: {
-            type: weatherSchema,
+            type:  new GraphQLList(weatherSchema),
             args: {
                 day: {
                     type: GraphQLInt
@@ -35,7 +35,7 @@ module.exports = new GraphQLObjectType({
             },
             resolve: async (parent, args) => {
 
-                return await weatherController.getOne(parent.starting_day, args.city)
+                return await weatherController.getOne(parent.starting_day, parent.ending_day, args.city)
                 }
         }
     })
