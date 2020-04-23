@@ -20,6 +20,11 @@ app.use((req, res, next) => {
     next();
   });
 //helsinkiApiController
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+  });
+  
 app.get('/update', helsinkiApiController.update);
 app.get('/delete', helsinkiApiController.DeleteOldOnes);
 
