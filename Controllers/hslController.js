@@ -1,13 +1,41 @@
 const graphqlRequest = require("../service/graphlqlRequest");
 
-const getRoute = async (from, to) => {
+const getRoute = async (from, to, date, time, routeNum) => {
+
+  let formString;
+  let toString;
+  let dateString;
+  let timeString;
+  let routeNumString;
+
+  if(from) {
+    formString = `from: {lat: ${from.lat} , lon: ${from.lon}}`
+  }
+
+  if(to) {
+    toString = `to: {lat: ${to.lat}, lon: ${to.lon}}`
+  }
+
+  if(date) {
+    dateString = `date: ${date}`
+  }
+
+  if(time) {
+    timeString = `time: ${date}`
+  }
+
+  if(routeNum) {
+    routeNumString = `numItineraries: ${routeNum}`
+  }
 
   const query =
     `{
         plan(
-          from: {lat: ${from.lat} , lon: ${from.lon}}
-          to: {lat: ${to.lat}, lon: ${to.lon}}
-          numItineraries: 1
+          ${formString ? formString : ""}
+          ${toString ? toString : ""}
+          ${dateString ? dateString: ""}       
+          ${timeString ? timeString: ""}
+          ${routeNumString ? routeNumString: ""}
         ) {
           itineraries {
             startTime
