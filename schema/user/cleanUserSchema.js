@@ -1,4 +1,4 @@
-// User with password field, only used for registering, logging in or modifying.
+// User schema without password field.
 const reservedEventSchema = require('../reservation/reservedEventSchema')
 const friendSchema = require('./friendSchema');
 const addressSchema = require('../event/addressSchema')
@@ -13,13 +13,12 @@ const {
     'graphql');
 
 module.exports = new GraphQLObjectType({
-	name: 'userSchema',
-	description: 'Used for creating a user.',
+	name: 'cleanUserSchema',
+	description: 'Used for fetching a user.',
 	fields: () => ({
 		id: {type: GraphQLID},
 		username: {type: GraphQLString},
 		email: {type: GraphQLString},
-		password: {type: GraphQLString},
 		address: {type: GraphQLString}, // Get from hsl after
 		intrests: {type: new GraphQLList(GraphQLString)},
 		friends: {
@@ -32,6 +31,8 @@ module.exports = new GraphQLObjectType({
 				}
 			}
 		},
-		reservations: {type: new GraphQLList(reservedEventSchema)},
+		reservations: {type: new GraphQLList(reservedEventSchema),
+		
+		},
 	})
 })
