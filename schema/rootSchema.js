@@ -134,7 +134,7 @@ const Mutation = new GraphQLObjectType ({
       resolve: async (parent, args) => {
         try {
           args.password = await bcrypt.hash(args.password, saltRound);
-          console.log('Modifying users data: ', args)
+          console.log('Modifying data of user: ', args)
           return await user.findByIdAndUpdate(args.id, args, {new:true});
         } catch (e) {
           return new Error(e.message);
