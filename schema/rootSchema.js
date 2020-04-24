@@ -1,5 +1,4 @@
-const bcrypt = require('bcrypt');
-const saltRound= 12; 
+
 
 const helsinkiApiController = require("../Controllers/helsinkiApiController");
 const eventSchema = require("./event/eventSchema");
@@ -8,9 +7,7 @@ const hslController = require("../Controllers/hslController");
 const userSchema = require('./user/userSchema');
 const cleanUserSchema = require('./user/cleanUserSchema');
 const authController = require('../Controllers/authController');
-const user = require('../model/userModel');
-const eventModel = require('../model/helsinkiModel');
-const reservation = require('../model/reservationModel');
+const userController = require('../Controllers/userController');
 
 const {
   GraphQLObjectType,
@@ -102,11 +99,7 @@ const RootQuery = new GraphQLObjectType({
         id: {type: new GraphQLNonNull (GraphQLID)}
       },
       resolve: async (parent, args) => {
-        try {
-          return await user.findById(args.id);
-        } catch (e) {
-          return new Error(e.message);
-        }
+        return await userController.getUser(args.id);
       }
     },
     UserLogin: {
@@ -148,19 +141,7 @@ const Mutation = new GraphQLObjectType ({
         address: {type: new GraphQLNonNull (GraphQLString)},
       },
       resolve: async (parent, args) => {
-        try {
-          const hashPw = await bcrypt.hash(args.password, saltRound);
-          const newUser = new user ({
-            username: args.username,
-            email: args.email,
-            password: hashPw,
-            address: args.address,
-          })
-          console.log('User with username: "' + args.username + '" registered!');
-          return newUser.save();
-        } catch (e) {
-          return new Error(e.message);
-        }
+        return await userController.registerUser(args);
       }
     },
     // TODO: add checkAuth later, not yet since makes testing annoying
@@ -175,13 +156,7 @@ const Mutation = new GraphQLObjectType ({
       },
       // resolve: async (parent, args, {req, res, checkAuth}
       resolve: async (parent, args) => {
-        try {
-          args.password = await bcrypt.hash(args.password, saltRound);
-          console.log('Modifying data of user: ', args)
-          return await user.findByIdAndUpdate(args.id, args, {new:true});
-        } catch (e) {
-          return new Error(e.message);
-        }
+        return await userController.modifyUser(args);
       }
     },
     UserDelete: {
@@ -191,12 +166,7 @@ const Mutation = new GraphQLObjectType ({
         id: {type: new GraphQLNonNull(GraphQLID)}
       },
       resolve: async (parent, args) => {
-        try {
-          console.log("Deleting user with id: ", args.id)
-          return await user.findByIdAndDelete(args.id);
-        } catch (e) {
-          return new Error(e.message);
-        }
+        return await userController.deleteUser(args.id);
       }
     },
     UserAddIntrest: {
@@ -207,15 +177,7 @@ const Mutation = new GraphQLObjectType ({
         intrests: {type: GraphQLString}
       },
       resolve: async (parent, args) => {
-        try {
-          const old = await user.findById(args.id);
-          const newIntrest = old.intrests;
-          newIntrest.push(args.intrests);
-          console.log("Added intrests to: ", args.intrests, "to: ", old.username);
-          return await user.findByIdAndUpdate(args.id, {intrests: newIntrest}, {new:true})
-        } catch (e) {
-          return new Error(e.message);
-        }
+        return await userController.addIntrest(args.id, args.intrests);
       }
     },
     UserRemoveIntrest: {
@@ -226,15 +188,7 @@ const Mutation = new GraphQLObjectType ({
         intrests: {type: GraphQLString}
       },
       resolve: async (parent, args) => {
-        try {
-          const intrestList = await user.findById(args.id);
-          const oldIntrest = intrestList.intrests;
-          const newIntrest= oldIntrest.filter(e => e !== args.intrests);
-          console.log("Removed intrest: ", args.intrests, 'to: ', intrestList.username);
-          return await user.findByIdAndUpdate(args.id, {intrests: newIntrest}, {new:true});
-        } catch (e) {
-          return new Error(e.message);
-        }
+        return await userController.removeIntrest(args.id, args.intrests);
       }
     },
     UserAddFriend: {
@@ -244,16 +198,8 @@ const Mutation = new GraphQLObjectType ({
         id: {type: new GraphQLNonNull(GraphQLID)},
         friends: {type: GraphQLID},
       },
-      resolve: async ( parent, args) => {
-        try {
-          const oldList = await user.findById(args.id);
-          const newList = oldList.friends;
-          newList.push(args.friends);
-          console.log("Added friendId: ", args.friends, 'to: ', friendList.username);
-          return await user.findByIdAndUpdate(args.id, {friends: newList}, {new:true});
-        } catch (e) {
-          return new Error(e.message);
-        }
+      resolve: async (parent, args) => {
+        return await userController.addFriend(args.id, args.friends);
       }
     },
     UserRemoveFriend: {
@@ -264,42 +210,18 @@ const Mutation = new GraphQLObjectType ({
         friends: {type: GraphQLID}
       },
       resolve: async(parent, args) => {
-        try {
-          const friendList = await user.findById(args.id);
-          const oldfriends = friendList.friends;
-          const newFriends= oldfriends.filter(e => e !== args.friends);
-          console.log("Removed friendId: ", args.friends, 'to: ', friendList.username);
-          return await user.findByIdAndUpdate(args.id, {friends: newFriends}, {new:true});
-        } catch (e) {
-          return new Error(e.message);
-        }
+        return await userController.removeFriend(args.id, args.friends);
       }
     },
     UserAddReservation: {
-      type: userSchema,
+      type: cleanUserSchema,
       description: 'Add reservations for user.',
       args: {
         id: {type: GraphQLID},
         event: {type: GraphQLString},
       },
       resolve: async (parent, args) => {
-        try {
-          const reserve = await eventModel.findOne({id: args.event});
-          const newReservation = new reservation ({
-            id: reserve.id,
-            name: reserve.name,
-            description: reserve.description,
-            tags: reserve.tags,
-            event_dates: reserve.event_dates,
-          });
-          const newOne = await newReservation.save();
-          const usr = await user.findById(args.id);
-          const reservations = usr.reservations;
-          reservations.push(newOne._id);
-          return await user.findByIdAndUpdate(args.id, {reservations: reservations}, {new:true});
-        } catch (e) {
-
-        }
+        return await userController.addReservation(args.id, args.event);
       }
     }
   })
