@@ -70,6 +70,7 @@ const DeleteOldOnes = async (req,res) => {
 
     //TEST this one
     await data.map(async (event) => {
+        console.log(event);
         let ts = new Date(new Date().getTime() * 1000).getTime()
         console.log(event.event_dates.starting_day.getTime() +"<<<<"+ ts)
         if (!event.event_dates.starting_day) {

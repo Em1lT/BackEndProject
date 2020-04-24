@@ -9,6 +9,8 @@ const userSchema = require('./user/userSchema');
 const cleanUserSchema = require('./user/cleanUserSchema');
 const authController = require('../Controllers/authController');
 const user = require('../model/userModel');
+const eventModel = require('../model/helsinkiModel');
+const reservation = require('../model/reservationModel');
 
 const {
   GraphQLObjectType,
@@ -270,6 +272,33 @@ const Mutation = new GraphQLObjectType ({
           return await user.findByIdAndUpdate(args.id, {friends: newFriends}, {new:true});
         } catch (e) {
           return new Error(e.message);
+        }
+      }
+    },
+    UserAddReservation: {
+      type: userSchema,
+      description: 'Add reservations for user.',
+      args: {
+        id: {type: GraphQLID},
+        event: {type: GraphQLString},
+      },
+      resolve: async (parent, args) => {
+        try {
+          const reserve = await eventModel.findOne({id: args.event});
+          const newReservation = new reservation ({
+            id: reserve.id,
+            name: reserve.name,
+            description: reserve.description,
+            tags: reserve.tags,
+            event_dates: reserve.event_dates,
+          });
+          const newOne = await newReservation.save();
+          const usr = await user.findById(args.id);
+          const reservations = usr.reservations;
+          reservations.push(newOne._id);
+          return await user.findByIdAndUpdate(args.id, {reservations: reservations}, {new:true});
+        } catch (e) {
+
         }
       }
     }

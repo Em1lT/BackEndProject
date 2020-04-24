@@ -1,8 +1,9 @@
 // User with password field, only used for registering, logging in or modifying.
-const reservedEventSchema = require('../reservation/reservedEventSchema')
+const reservationSchema = require('../reservation/reservationSchema')
 const friendSchema = require('./friendSchema');
 const addressSchema = require('../event/addressSchema')
 const user = require('../../model/userModel');
+const reservation = require('../../model/reservationModel');
 
 const {
     GraphQLID,
@@ -19,7 +20,8 @@ module.exports = new GraphQLObjectType({
 		id: {type: GraphQLID},
 		username: {type: GraphQLString},
 		email: {type: GraphQLString},
-		password: {type: GraphQLString},
+		//password: {type: GraphQLString},
+		token: {type: GraphQLString},
 		address: {type: GraphQLString}, // Get from hsl after
 		intrests: {type: new GraphQLList(GraphQLString)},
 		friends: {
@@ -32,6 +34,16 @@ module.exports = new GraphQLObjectType({
 				}
 			}
 		},
-		reservations: {type: new GraphQLList(reservedEventSchema)},
+		// fix
+		reservations: {
+			type: new GraphQLList(reservationSchema),
+			resolve: async (parent, args) => {
+				try {
+					return await reservation.find({'_id': {$in: parent.reservations}})
+				} catch (e) {
+					return new Error(e.message)
+				}
+			}
+		},
 	})
 })
