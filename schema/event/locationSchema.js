@@ -26,18 +26,17 @@ module.exports = new GraphQLObjectType({
         route: {
             type:hslSchema,
             args: {
-                lat: {
-                    type: GraphQLFloat
-
-                },
-                lon: {
-                    type: GraphQLFloat
-                }
+                fromLat: {type: GraphQLFloat},
+                fromLon: {type: GraphQLFloat},
+                date: {type: GraphQLString},
+                time: {type: GraphQLString},
             },
             resolve: async (parent, args) => {
-                let from = {lat: args.lat, lon: args.lon};
+                let from = {lat: args.fromLat, lon: args.fromLon};
                 let to = {lat: parent.lat, lon: parent.lon};
-                let data =await hslController.getRoute(from, to);
+                let date = args.date;
+                let time = args.time;
+                let data =await hslController.getRoute(from, to,date, time);
                 return data;
             },
         }

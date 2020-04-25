@@ -62,33 +62,19 @@ const RootQuery = new GraphQLObjectType({
     route: {
       type: hslSchema,
       args: {
-        fromLat: {
-          type: GraphQLFloat,
-        },
-        fromLon: {
-          type: GraphQLFloat,
-        },
-        toLat: {
-          type: GraphQLFloat,
-        },
-        toLon: {
-          type: GraphQLFloat,
-        },
-        date: {
-          type: GraphQLString,
-        },
-        time: {
-          type: GraphQLString,
-        },
-        routeNumber: {
-          type: GraphQLInt,
-        },
+        fromLat: {type: GraphQLFloat},
+        fromLon: {type: GraphQLFloat},
+        toLat: {type: GraphQLFloat},
+        toLon: {type: GraphQLFloat,},
+        date: {type: GraphQLString},
+        time: {type: GraphQLString},
+        routeNumber: {type: GraphQLInt},
       },
       resolve: async (parent, args) => {
         let from = { lat: args.fromLat, lon: args.fromLon };
         let to = { lat: args.toLat, lon: args.toLon };
         let date = args.date;
-        let time = args.time 
+        let time = args.time;
         let data = await hslController.getRoute(from, to, date, time, args.routeNumber);
         return data;
       },
