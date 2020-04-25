@@ -22,13 +22,18 @@ const getOne = async (startDay, endingDay, city) => {
     let now = moment(new Date()).startOf('day').format();
     
     let dates;
-
     if(goal < now) {
+        if(!endingDay){
+            endingDay = moment(startDay).format();
+        }
         dates = await getDates(now, endingDay);
     } else {
+        if(!endingDay){
+            endingDay = moment(startDay).format();
+        }
         dates = await getDates(startDay, endingDay);
     }
-
+    
     let place = await placeModel.findOne({
         city_name: city
     }).populate({
