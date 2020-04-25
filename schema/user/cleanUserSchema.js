@@ -1,8 +1,9 @@
 // User schema without password field.
-const reservedEventSchema = require('../reservation/reservedEventSchema')
+const reservationSchema = require('../reservation/reservationSchema')
 const friendSchema = require('./friendSchema');
 const addressSchema = require('../event/addressSchema')
 const user = require('../../model/userModel');
+const reservation = require('../../model/reservationModel');
 
 const {
     GraphQLID,
@@ -31,8 +32,15 @@ module.exports = new GraphQLObjectType({
 				}
 			}
 		},
-		reservations: {type: new GraphQLList(reservedEventSchema),
-		
+		reservations: {
+			type: new GraphQLList(reservationSchema),
+			resolve: async (parent, args) => {
+				try {
+					return await reservation.find({'_id': {$in: parent.reservations}})
+				} catch (e) {
+					return new Error(e.message)
+				}
+			}
 		},
 	})
 })

@@ -1,5 +1,5 @@
 // User schema without private data.
-const reservedEventSchema = require('../reservation/reservedEventSchema')
+const reservedEventSchema = require('../reservation/reservationSchema')
 
 const {
     GraphQLID,
