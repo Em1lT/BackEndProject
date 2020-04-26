@@ -8,7 +8,8 @@ const reservation = require('../model/reservationModel');
 
 const getUser = async (id) => {
     try {
-        return await user.findById(id);
+        let data=  await user.findById(id).populate();
+        return data;
       } catch (e) {
         return new Error(e.message);
       }
@@ -78,7 +79,7 @@ const addFriend = async (id, friends) => {
         const oldList = await user.findById(id);
         const newList = oldList.friends;
         newList.push(friends);
-        console.log("Added friendId: ", friends, 'to: ', friendList.username);
+        //console.log("Added friendId: ", friends, 'to: ', friendList.username);
         return await user.findByIdAndUpdate(id, {friends: newList}, {new:true});
       } catch (e) {
         return new Error(e.message);
