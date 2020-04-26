@@ -237,7 +237,6 @@ const Mutation = new GraphQLObjectType ({
         reservation: {type: GraphQLID, description: "reservation _id"},
       },
       resolve: async (parent, args) => {
-        console.log(typeof args.reservation)
         return await userController.removeReservation(args.id, args.reservation);
       }
     }

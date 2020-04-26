@@ -33,12 +33,15 @@ const registerUser = async (data) => {
 
 const modifyUser = async (data) => {
     try {
+      console.log(data)
+      if (!data.password==null) {
         datapassword = await bcrypt.hash(data.password, saltRound);
-        console.log('Modifying data of user: ', data)
-        return await user.findByIdAndUpdate(data.id, data, {new:true});
-      } catch (e) {
-        return new Error(e.message);
       }
+      console.log('Modifying data of user: ', data)
+      return await user.findByIdAndUpdate(data.id, data, {new:true});
+      } catch (e) {
+      return new Error(e.message);
+    }
 }
 
 const deleteUser = async (id) => {
@@ -52,10 +55,10 @@ const deleteUser = async (id) => {
 
 const addIntrest = async (id, intrest) => {
     try {
-        const old = await user.findById(id);
-        const newIntrest = old.intrests;
-        newIntrest.push(intrests);
-        console.log("Added intrests to: ", intrests, "to: ", old.username);
+        const usr = await user.findById(id);
+        const newIntrest = usr.intrests;
+        newIntrest.push(intrest);
+        console.log("Added intrests to: ", intrest, "to: ", usr.username);
         return await user.findByIdAndUpdate(id, {intrests: newIntrest}, {new:true})
       } catch (e) {
         return new Error(e.message);
@@ -64,10 +67,10 @@ const addIntrest = async (id, intrest) => {
 
 const removeIntrest = async (id, intrest) => {
     try {
-        const intrestList = await user.findById(id);
-        const oldIntrest = intrestList.intrests;
-        const newIntrest= oldIntrest.filter(e => e !== intrests);
-        console.log("Removed intrest: ", intrests, 'to: ', intrestList.username);
+        const usr = await user.findById(id);
+        const oldIntrest = usr.intrests;
+        const newIntrest= oldIntrest.filter(e => e !== intrest);
+        console.log("Removed intrest: ", intrest, 'to: ', usr.username);
         return await user.findByIdAndUpdate(id, {intrests: newIntrest}, {new:true});
       } catch (e) {
         return new Error(e.message);
@@ -76,10 +79,10 @@ const removeIntrest = async (id, intrest) => {
 
 const addFriend = async (id, friends) => {
     try {
-        const oldList = await user.findById(id);
-        const newList = oldList.friends;
+        const usr = await user.findById(id);
+        const newList = usr.friends;
         newList.push(friends);
-        console.log("Added friendId: ", friends, 'to: ', friendList.username);
+        console.log("Added friendId: ", friends, 'to: ', usr.username);
         return await user.findByIdAndUpdate(id, {friends: newList}, {new:true});
       } catch (e) {
         return new Error(e.message);
@@ -88,10 +91,10 @@ const addFriend = async (id, friends) => {
 
 const removeFriend = async (id, friends) => {
     try {
-        const friendList = await user.findById(id);
-        const oldfriends = friendList.friends;
+        const usr = await user.findById(id);
+        const oldfriends = usr.friends;
         const newFriends= oldfriends.filter(e => e !== friends);
-        console.log("Removed friendId: ", friends, 'to: ', friendList.username);
+        console.log("Removed friendId: ", friends, 'to: ', usr.username);
         return await user.findByIdAndUpdate(id, {friends: newFriends}, {new:true});
       } catch (e) {
         return new Error(e.message);
