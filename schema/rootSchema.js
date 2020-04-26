@@ -38,7 +38,8 @@ const RootQuery = new GraphQLObjectType({
           type: GraphQLString,
         },
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        console.log(req.requstHeaders)
         return await helsinkiApiController.getAll(
           args.limit,
           args.today,

@@ -10,10 +10,11 @@ const rootSchema = require('./schema/rootSchema');
 const helsinkiApiController = require('./Controllers/helsinkiApiController');
 const weatherController = require('./Controllers/weatherController');
 const hslApiController = require('./Controllers/hslController');
-
 const db = require('./service/db');
+const {logger} = require('./winston');
 
 app.use(cors());
+
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     next();
