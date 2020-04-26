@@ -5,6 +5,7 @@ const eventSchema = require("./event/eventSchema");
 const hslSchema = require("../schema/hsl/hslSchema");
 const hslController = require("../Controllers/hslController");
 const userSchema = require('./user/userSchema');
+const reservationSchema= require('./reservation/reservationSchema');
 const cleanUserSchema = require('./user/cleanUserSchema');
 const authController = require('../Controllers/authController');
 const userController = require('../Controllers/userController');
@@ -81,7 +82,7 @@ const RootQuery = new GraphQLObjectType({
         return data;
       },
     },
-    User: {
+    user: {
       type: cleanUserSchema,
       description: 'Get user by id.',
       args: {
@@ -91,7 +92,7 @@ const RootQuery = new GraphQLObjectType({
         return await userController.getUser(args.id);
       }
     },
-    UserLogin: {
+    userLogin: {
       type: userSchema,
       description: 'User login to receive token.',
       args: {
@@ -113,6 +114,23 @@ const RootQuery = new GraphQLObjectType({
         }
       }
     },
+    reservations: {
+      type: new GraphQLList(reservationSchema),
+      description: "Get all reservations.",
+      resolve: async (parent, args) => {
+        return userController.getReservations();
+      }
+    },
+    reservation: {
+      type: reservationSchema,
+      description: "Get reservation with ObjectId.",
+      args: {
+        id: {type: GraphQLID}
+      },
+      resolve: (parent, args) => {
+        return userController.getReservation();
+      }
+    }
   }
 });
 
@@ -207,10 +225,21 @@ const Mutation = new GraphQLObjectType ({
       description: 'Add reservations for user.',
       args: {
         id: {type: GraphQLID},
-        event: {type: GraphQLString},
+        reservation: {type: GraphQLString},
       },
       resolve: async (parent, args) => {
-        return await userController.addReservation(args.id, args.event);
+        return await userController.addReservation(args.id, args.reservation);
+      }
+    },
+    UserRemoveReservation: {
+      type: cleanUserSchema,
+      description: 'Remove reservations for user.',
+      args: {
+        id: {type: GraphQLID, description: "user id"},
+        reservation: {type: GraphQLID, description: "reservation _id"},
+      },
+      resolve: async (parent, args) => {
+        return await userController.removeReservation(args.id, args.reservation);
       }
     },
     deleteOldEvents: {
