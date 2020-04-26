@@ -9,7 +9,7 @@ const reservation = require('../model/reservationModel');
 // User functions
 const getUser = async (id) => {
     try {
-        let data=  await user.findById(id).populate();
+        let data=  await user.findById(id);
         return data;
       } catch (e) {
         return new Error(e.message);

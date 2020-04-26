@@ -128,7 +128,7 @@ const RootQuery = new GraphQLObjectType({
         id: {type: GraphQLID}
       },
       resolve: (parent, args) => {
-        return userController.getReservation();
+        return userController.getReservation(args.id);
       }
     }
   }

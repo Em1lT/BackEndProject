@@ -6,7 +6,7 @@ const {
     GraphQLObjectType,
     GraphQLFloat,
     GraphQLString,
-    GraphQlNonNull
+    GraphQLNonNull
 } = require(
     'graphql');
 
@@ -26,8 +26,8 @@ module.exports = new GraphQLObjectType({
         route: {
             type:hslSchema,
             args: {
-                fromLat: {type: GraphQLFloat},
-                fromLon: {type: GraphQLFloat},
+                fromLat: {type:  new GraphQLNonNull(GraphQLFloat)},
+                fromLon: {type: new GraphQLNonNull(GraphQLFloat)},
                 date: {type: GraphQLString},
                 time: {type: GraphQLString},
             },
