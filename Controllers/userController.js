@@ -83,11 +83,7 @@ const addFriend = async (id, friends) => {
         const usr = await user.findById(id);
         const newList = usr.friends;
         newList.push(friends);
-<<<<<<< HEAD
-        //console.log("Added friendId: ", friends, 'to: ', friendList.username);
-=======
         console.log("Added friendId: ", friends, 'to: ', usr.username);
->>>>>>> origin/dev-tim
         return await user.findByIdAndUpdate(id, {friends: newList}, {new:true});
       } catch (e) {
         return new Error(e.message);
