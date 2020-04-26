@@ -13,10 +13,12 @@ module.exports = new GraphQLObjectType({
 	name: 'reservedEventSchema',
 	description: 'Event reservation.',
 	fields: () => ({
+        _id: {type: GraphQLID},
         id: {type: GraphQLID},
         name: {type: nameSchema},
         description: {type: descriptionSchema},
         tags: {type: new GraphQLList(tagsSchema)},
         event_dates: {type: eventDateSchema},
+        user: {type: GraphQLID},
 	})
 })

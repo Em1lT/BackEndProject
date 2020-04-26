@@ -30,14 +30,6 @@ app.get('/weather', weatherController.update);
 //2.Create Graphql schema for events, weather
 //3. Model the reserved event.
 //4. HSL 
-/*app.use(
-    '/graphql', 
-    graphqlHTTP({
-        schema: rootSchema,
-        graphiql: true,
-    }),
-);
-*/
 app.use('/graphql', (req, res) => {
     graphqlHTTP({schema: rootSchema, graphiql: true, context: {req, res}})(req,
         res);

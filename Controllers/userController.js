@@ -6,6 +6,7 @@ const user = require('../model/userModel');
 const eventModel = require('../model/helsinkiModel');
 const reservation = require('../model/reservationModel');
 
+// User functions
 const getUser = async (id) => {
     try {
         return await user.findById(id);
@@ -97,6 +98,7 @@ const removeFriend = async (id, friends) => {
       }
 }
 
+// Create new reservation document then save to users list.
 const addReservation = async (id, event) => {
     try {
         const reserve = await eventModel.findOne({id: event});
@@ -106,6 +108,7 @@ const addReservation = async (id, event) => {
           description: reserve.description,
           tags: reserve.tags,
           event_dates: reserve.event_dates,
+          user: id,
         });
         const newOne = await newReservation.save();
         const usr = await user.findById(id);
@@ -115,6 +118,37 @@ const addReservation = async (id, event) => {
       } catch (e) {
         return new Error(e.message);
       }
+}
+
+// Remove reservation document from collection and users list.
+const removeReservation = async (id, eventId) => {
+  try {
+    const usr = await user.findById(id);
+    const reservations = usr.reservations;
+    const updateReservation= reservations.filter(e => e.toString() !== eventId);
+    console.log("Removed eventId: ", eventId, 'from: ', usr.username);
+    await reservation.findByIdAndDelete(eventId);
+    return await user.findByIdAndUpdate(id, {reservations: updateReservation}, {new:true});
+  } catch (e) {
+    return new Error(e.message);
+  }
+}
+
+// Reservation functions
+const getReservations = async () => {
+  try {
+    return await reservation.find()
+  } catch (e) {
+    return new Error(e.message);
+  }
+}
+
+const getReservation = async (id) => {
+  try {
+    return await reservation.findById(id);
+  } catch (e) {
+    return new Error(e.message);
+  }
 }
 
 module.exports = {
@@ -127,4 +161,7 @@ module.exports = {
     addFriend,
     removeFriend,
     addReservation,
+    removeReservation,
+    getReservations,
+    getReservation,
 }
