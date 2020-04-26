@@ -4,6 +4,7 @@ const friendSchema = require('./friendSchema');
 const addressSchema = require('../event/addressSchema')
 const user = require('../../model/userModel');
 const reservation = require('../../model/reservationModel');
+const eventSchema = require('../event/eventSchema')
 
 const {
     GraphQLID,

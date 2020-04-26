@@ -108,6 +108,10 @@ const addReservation = async (id, event) => {
         const newReservation = new reservation ({
           id: reserve.id,
           name: reserve.name,
+          source_type: reserve.source_type,
+          info_url: reserve.info_url,
+          modified_at: reserve.modified_at,
+          location: reserve.location,
           description: reserve.description,
           tags: reserve.tags,
           event_dates: reserve.event_dates,
@@ -124,14 +128,18 @@ const addReservation = async (id, event) => {
 }
 
 // Remove reservation document from collection and users list.
-const removeReservation = async (id, eventId) => {
+const removeReservation = async (id, reservationId) => {
   try {
     const usr = await user.findById(id);
     const reservations = usr.reservations;
-    const updateReservation= reservations.filter(e => e.toString() !== eventId);
-    console.log("Removed eventId: ", eventId, 'from: ', usr.username);
-    await reservation.findByIdAndDelete(eventId);
-    return await user.findByIdAndUpdate(id, {reservations: updateReservation}, {new:true});
+    const rsrvGet = await reservation.findOne({user: id, id: reservationId})
+    //console.log(rsrvGet._id)
+    //console.log(typeof rsrvGet._id)
+    const newReservation= reservations.filter(e => e.toString() !== rsrvGet._id.toString());
+    //console.log(newReservation);
+    console.log("Removed reservationId: ", reservationId, 'from: ', usr.username);
+    await reservation.findByIdAndDelete(rsrvGet._id.toString());
+    return await user.findByIdAndUpdate(id, {reservations: newReservation}, {new:true});
   } catch (e) {
     return new Error(e.message);
   }
