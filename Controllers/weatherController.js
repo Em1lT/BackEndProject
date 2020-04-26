@@ -51,7 +51,7 @@ const getOne = async (startDay, endingDay, city) => {
     return rightWeather;
 }
 
-const update = async (req, res) => {
+const update = async () => {
     let weatherData = await weatherApi.getAll();
     let city = weatherData.data.city_name
     let ids = await deleteOldAndsaveWeather(city, weatherData.data.data);
@@ -73,7 +73,7 @@ const update = async (req, res) => {
 
     if (!findPlace) {
         dbResponse = savedWeathers.save();
-        res.json("Weather saved");
+        return "Weather saved";
     } else {
         dbResponse = await placeModel.updateOne({
             city_name: weatherData.data.city_name
@@ -81,7 +81,7 @@ const update = async (req, res) => {
             weatherIds: ids
         })
         console.log(dbResponse);
-        res.json("Weather updated");
+        return "Weather updated";
     }
 }
 

@@ -5,7 +5,7 @@ const helsinkiModel = require("../model/helsinkiModel");
 const update = async (req, res) => {
   let data = await helApi.getAll();
   let updated = await searchAndUpdate(data);
-  res.json("Added %s events to db" + updated);
+  return "Added "+updated+" events to db";
 };
 
 const getAll = async (limit, today, nameIncludes) => {
@@ -112,7 +112,7 @@ const createModel = (item) => {
   return eventModel;
 };
 
-const DeleteOldOnes = async (req, res) => {
+const DeleteOldOnes = async () => {
   let data = await helsinkiModel.find({});
   let deletedID = 0;
 
@@ -135,9 +135,10 @@ const DeleteOldOnes = async (req, res) => {
       }
     } catch (e) {
       console.log("error" + e);
+      return false;
     }
   });
-  res.json("Number of deleted items:" + deletedID);
+  return true;
 };
 
 module.exports = {

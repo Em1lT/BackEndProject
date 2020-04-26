@@ -8,6 +8,7 @@ const userSchema = require('./user/userSchema');
 const cleanUserSchema = require('./user/cleanUserSchema');
 const authController = require('../Controllers/authController');
 const userController = require('../Controllers/userController');
+const weatherController = require('../Controllers/weatherController');
 
 const {
   GraphQLObjectType,
@@ -39,7 +40,8 @@ const RootQuery = new GraphQLObjectType({
         },
       },
       resolve: async (parent, args, {req, res}) => {
-        console.log(req.requstHeaders)
+      console.log(req.method+" "+req.originalUrl+" " +"(Authorization: "+req.get("Authorization")+")")
+
         return await helsinkiApiController.getAll(
           args.limit,
           args.today,
@@ -209,6 +211,27 @@ const Mutation = new GraphQLObjectType ({
       },
       resolve: async (parent, args) => {
         return await userController.addReservation(args.id, args.event);
+      }
+    },
+    deleteOldEvents: {
+      type: GraphQLBoolean,
+      description: 'Delete old reservations',
+      resolve: async (parent, args) => {
+        return await helsinkiApiController.DeleteOldOnes();
+      }
+    },
+    updateEvents: {
+      type: GraphQLString,
+      description: 'Updates the reservations',
+      resolve: async (parent, args) => {
+        return await helsinkiApiController.update();
+      }
+    },
+    updateWeather: {
+      type: GraphQLString,
+      description: 'Updates the weather',
+      resolve: async (parent, args) => {
+        return await weatherController.update();
       }
     }
   })
