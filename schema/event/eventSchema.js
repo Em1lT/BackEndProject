@@ -4,6 +4,7 @@ const sourceSchema = require('./sourceSchema')
 const eventDateSchema = require('./eventDateSchema')
 const descriptionSchema = require('./descriptionSchema')
 const tagsSchema = require('./tagsSchema')
+const reservation = require('../../model/reservationModel');
 
 const {
     GraphQLObjectType,
@@ -18,6 +19,9 @@ module.exports = new GraphQLObjectType({
     name: 'event',
     description: 'event description',
     fields: () => ({
+        _id:{
+            type: GraphQLID
+        },
         id: {
             type: GraphQLID
         },
@@ -38,6 +42,22 @@ module.exports = new GraphQLObjectType({
         },
         description: {
             type: descriptionSchema
+        },
+        createdAt: {
+            type: GraphQLString
+        },
+        updatedAt: {
+            type: GraphQLString
+        },
+        reservedById: {
+            type: new GraphQLList(GraphQLID),
+            resolve: async (parent, args) => {
+				try {
+					return await reservation.find({'_id': {$in: parent.reservations}})
+				} catch (e) {
+					return new Error(e.message)
+				}
+			}
         },
         tags: {
             type: new GraphQLList(tagsSchema)

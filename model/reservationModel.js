@@ -9,7 +9,18 @@ const reservationModel = new Schema({
          */
         id: String,
         user: String,
-    
+        /**
+         * When the the event was reserved
+         * @param {String} id 
+         */
+        created_timestamp: {type: Date, default: Date.now},
+
+        /**
+         * on What day the event was reserved 
+         * @param {String} id 
+         */
+        reservation_timestamp: Date,
+
         /**
          * name of the event
          * @param {String} id 

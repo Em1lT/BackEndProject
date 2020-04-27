@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-//TODO: create a DOC for everything...
 const helsinkiEvents = new Schema({
 
     /**
@@ -12,17 +11,32 @@ const helsinkiEvents = new Schema({
 
     /**
      * name of the event
-     * @param {String} id 
+     * @param {String} name 
      */
     name: {
 
         /**
          * Name of the event in finnish
-         * @param {String} id 
+         * @param {String} fi 
          */
         fi: String,
+
+        /**
+         * Name of the event in english
+         * @param {String} en 
+         */
         en: String,
+
+        /**
+         * Name of the event in swedish
+         * @param {String} sv 
+         */        
         sv: String,
+        
+        /**
+         * Name of the event in finnish
+         * @param {String} fi 
+         */
         zv: String,
     },
 
@@ -62,8 +76,9 @@ const helsinkiEvents = new Schema({
         starting_day: Date,
         ending_day: Date,
         additional_description: String
-    }
+    },
+    reservedById: []
 
-})
+},{timestamps: true})
 
 module.exports = mongoose.model('events', helsinkiEvents);

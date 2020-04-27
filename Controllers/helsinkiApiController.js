@@ -80,20 +80,18 @@ const getOne = async (name) => {
 };
 
 const searchAndUpdate = async (data) => {
-  let Added = 0;
+  let bad = 0;
 
-  await data.map(async (item) => {
+  const added = await data.map(async (item) => {
     let dbData = await helsinkiModel.findOne({
       id: item.id,
     });
-    console.log(dbData);
     if (!dbData) {
       if (item.event_dates.starting_day) {
         let eventModel = createModel(item);
-        Added++;
-        console.log(Added + ". item Added: " + item.name.fi);
         try {
           await eventModel.save();
+          console.log("Item Added: " + item.name.fi);
         } catch (e) {
           console.log("Error", e);
         }
@@ -104,12 +102,7 @@ const searchAndUpdate = async (data) => {
       console.log("already in db: " + item.name.fi);
     }
   });
-  return Added;
-};
-
-const createModel = (item) => {
-  let eventModel = new helsinkiModel(item);
-  return eventModel;
+  return added.length;
 };
 
 const DeleteOldOnes = async () => {
@@ -139,6 +132,84 @@ const DeleteOldOnes = async () => {
     }
   });
   return true;
+};
+
+
+const createModel = (item) => {
+
+  let nameModel = {
+    fi: item.name.fi,
+    en: item.name.en,
+    en: item.name.sv,
+    zv: item.name.zv
+  }
+
+  let source_typeModel = {
+    id: item.source_type.id,
+    name: item.source_type.name
+  }
+
+  let addressModel= {
+    street_address: item.location.address.street_address,
+    postal_code: item.location.address.postal_code,
+    locality: item.location.address.locality
+  }
+
+  let locationModel = {
+    lat: item.location.lat,
+    lon: item.location.lon,
+    address: addressModel
+  }
+
+  let imagesArr = [];
+  let tagsModelArr = []; 
+  item.tags.map((tag) => {
+    let tagModel = {
+      id: tag.id,
+      name: tag.name
+    }
+    tagsModelArr.push(tagModel);
+  })
+
+  item.description.images.map((image) => {
+    let license_typeModel = {
+      id:image.license_type.id,
+      name:image.license_type.name
+    }
+
+    let imageModel = {
+       url: image.url,
+       copyright_holder: image.copyright_holder,
+       license_type: license_typeModel
+     }
+     imagesArr.push(imageModel)
+  })
+
+  let descriptionModel = {
+    intro: item.description.intro,
+    body: item.description.body,
+    images: imagesArr
+  }
+
+  let event_datesModel = {
+    starting_day: item.event_dates.starting_day,
+    ending_day: item.event_dates.ending_day,
+    additional_description: item.event_dates.additional_description
+  }
+
+  let eventModel = new helsinkiModel({
+    id:item.id,
+    name: nameModel,
+    source_type: source_typeModel,
+    info_url: item.info_url,
+    modified_at: item.modified_at,
+    location: locationModel,
+    description: descriptionModel,
+    tags: tagsModelArr,
+    event_dates: event_datesModel,
+
+  });
+  return eventModel;
 };
 
 module.exports = {

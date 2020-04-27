@@ -106,23 +106,35 @@ const removeFriend = async (id, friends) => {
 const addReservation = async (id, event) => {
     try {
         const reserve = await eventModel.findOne({id: event});
-        const newReservation = new reservation ({
+        const alreadyReserved = await reservation.findOne({
           id: reserve.id,
-          name: reserve.name,
-          source_type: reserve.source_type,
-          info_url: reserve.info_url,
-          modified_at: reserve.modified_at,
-          location: reserve.location,
-          description: reserve.description,
-          tags: reserve.tags,
-          event_dates: reserve.event_dates,
-          user: id,
-        });
-        const newOne = await newReservation.save();
-        const usr = await user.findById(id);
-        const reservations = usr.reservations;
-        reservations.push(newOne._id);
-        return await user.findByIdAndUpdate(id, {reservations: reservations}, {new:true});
+          user: id
+          });
+
+          if(!alreadyReserved) {
+            const newReservation = new reservation ({
+              id: reserve.id,
+              name: reserve.name,
+              source_type: reserve.source_type,
+              info_url: reserve.info_url,
+              modified_at: reserve.modified_at,
+              location: reserve.location,
+              description: reserve.description,
+              tags: reserve.tags,
+              event_dates: reserve.event_dates,
+              user: id,
+            });
+            //Add marker to event field
+
+            const newOne = await newReservation.save();
+            const usr = await user.findById(id);
+            const reservations = usr.reservations;
+            reservations.push(newOne._id);
+            const updateEvent = await eventModel.updateOne({id:reserve.id}, {reservedById: id})
+            return await user.findByIdAndUpdate(id, {reservations: reservations}, {new:true});
+          } else {
+              return new Error("Already reserved!");
+          }     
       } catch (e) {
         return new Error(e.message);
       }
