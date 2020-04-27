@@ -4,7 +4,9 @@ const sourceSchema = require('./sourceSchema')
 const eventDateSchema = require('./eventDateSchema')
 const descriptionSchema = require('./descriptionSchema')
 const tagsSchema = require('./tagsSchema')
+const user = require('../../model/userModel');
 const reservation = require('../../model/reservationModel');
+const reservedEventSchema = require('../reservation/reservationSchema')
 
 const {
     GraphQLObjectType,
@@ -50,13 +52,28 @@ module.exports = new GraphQLObjectType({
             type: GraphQLString
         },
         reservedById: {
-            type: new GraphQLList(GraphQLID),
+            type: reservedEventSchema,
+            args: {
+                id: {type: GraphQLID},
+            },        
             resolve: async (parent, args) => {
-				try {
-					return await reservation.find({'_id': {$in: parent.reservations}})
-				} catch (e) {
-					return new Error(e.message)
-				}
+                try {
+                    let data =await reservation.find({'user': args.id})      
+                    console.log(data);
+                    return data[0];
+                } catch (error) {
+                    return new Error(e.message)                    
+                }
+            }
+        },
+        reserved: {
+            type: new GraphQLList(require('../user/cleanUserSchema')),     
+            resolve: async (parent, args) => {
+                try {
+                    return await user.find({'_id': {$in: parent.reservedById}})
+                } catch (e) {
+                    return new Error(e.message)
+                }
 			}
         },
         tags: {
@@ -67,3 +84,12 @@ module.exports = new GraphQLObjectType({
         }
     }),
 });
+
+/*
+resolve: async (parent, args) => {
+				try {
+				} catch (e) {
+					return new Error(e.message)
+				}
+			}
+*/

@@ -1,5 +1,3 @@
-
-
 const helsinkiApiController = require("../Controllers/helsinkiApiController");
 const eventSchema = require("./event/eventSchema");
 const hslSchema = require("../schema/hsl/hslSchema");
