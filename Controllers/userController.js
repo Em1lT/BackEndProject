@@ -25,7 +25,7 @@ const registerUser = async (data) => {
           password: hashPw,
           address: data.address,
         })
-        console.log('User with username: "' + data.username + '" registered!');
+        //console.log('User with username: "' + data.username + '" registered!');
         return newUser.save();
       } catch (e) {
         return new Error(e.message);

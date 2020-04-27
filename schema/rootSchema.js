@@ -147,8 +147,16 @@ const Mutation = new GraphQLObjectType ({
         password: {type: new GraphQLNonNull (GraphQLString)},
         address: {type: new GraphQLNonNull (GraphQLString)},
       },
-      resolve: async (parent, args) => {
-        return await userController.registerUser(args);
+      resolve: async (parent, args, {req, res}) => {
+        req.body = args;
+        await userController.registerUser(args);
+        const auth = await authController.login(req, res);
+        console.log({user: auth.user.username, token: auth.token});
+        return {
+          id: auth.user._id,
+          ...auth.user,
+          token: auth.token,
+        }
       }
     },
     // TODO: add checkAuth later, not yet since makes testing annoying
