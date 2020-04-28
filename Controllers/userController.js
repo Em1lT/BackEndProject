@@ -2,6 +2,7 @@
 const bcrypt = require('bcrypt');
 const saltRound= 12; 
 
+const location = require('../service/locationService');
 const user = require('../model/userModel');
 const eventModel = require('../model/helsinkiModel');
 const reservation = require('../model/reservationModel');
@@ -19,11 +20,16 @@ const getUser = async (id) => {
 const registerUser = async (data) => {
     try {
         const hashPw = await bcrypt.hash(data.password, saltRound);
+        const loc = await location.getLocation(data.address)
+        console.log(loc)
         const newUser = new user ({
           username: data.username,
           email: data.email,
           password: hashPw,
-          address: data.address,
+          address: {
+            street_address: data.address,
+            coordinates: loc
+          }
         })
         //console.log('User with username: "' + data.username + '" registered!');
         return newUser.save();

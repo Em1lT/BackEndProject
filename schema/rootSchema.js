@@ -88,7 +88,10 @@ const RootQuery = new GraphQLObjectType({
       args: {
         id: {type: new GraphQLNonNull (GraphQLID)}
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        console.log(req.headers)
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.getUser(args.id);
       }
     },
@@ -114,6 +117,7 @@ const RootQuery = new GraphQLObjectType({
         }
       }
     },
+    // Add checkAuth?
     reservations: {
       type: new GraphQLList(reservationSchema),
       description: "Get all reservations.",
@@ -169,8 +173,9 @@ const Mutation = new GraphQLObjectType ({
         address: {type: GraphQLString},
         password: {type: GraphQLString},
       },
-      // resolve: async (parent, args, {req, res, checkAuth}
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.modifyUser(args);
       }
     },
@@ -180,7 +185,9 @@ const Mutation = new GraphQLObjectType ({
       args: {
         id: {type: new GraphQLNonNull(GraphQLID)}
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.deleteUser(args.id);
       }
     },
@@ -191,7 +198,9 @@ const Mutation = new GraphQLObjectType ({
         id: {type: new GraphQLNonNull(GraphQLID)},
         intrests: {type: GraphQLString}
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.addIntrest(args.id, args.intrests);
       }
     },
@@ -202,7 +211,9 @@ const Mutation = new GraphQLObjectType ({
         id: {type: new GraphQLNonNull(GraphQLID)},
         intrests: {type: GraphQLString}
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.removeIntrest(args.id, args.intrests);
       }
     },
@@ -213,7 +224,9 @@ const Mutation = new GraphQLObjectType ({
         id: {type: new GraphQLNonNull(GraphQLID)},
         friends: {type: GraphQLID},
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.addFriend(args.id, args.friends);
       }
     },
@@ -224,7 +237,9 @@ const Mutation = new GraphQLObjectType ({
         id: {type: new GraphQLNonNull(GraphQLID)},
         friends: {type: GraphQLID}
       },
-      resolve: async(parent, args) => {
+      resolve: async(parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.removeFriend(args.id, args.friends);
       }
     },
@@ -235,7 +250,9 @@ const Mutation = new GraphQLObjectType ({
         id: {type: GraphQLID},
         reservation: {type: GraphQLString},
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.addReservation(args.id, args.reservation);
       }
     },
@@ -246,7 +263,9 @@ const Mutation = new GraphQLObjectType ({
         id: {type: GraphQLID, description: "user id"},
         reservation: {type: GraphQLID, description: "reservation _id"},
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.removeReservation(args.id, args.reservation);
       }
     },

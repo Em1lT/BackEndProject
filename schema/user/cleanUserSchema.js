@@ -1,6 +1,7 @@
 // User schema without password field.
 const friendSchema = require('./friendSchema');
 const user = require('../../model/userModel');
+const userLocationSchema = require('./userLocationSchema');
 const reservation = require('../../model/reservationModel');
 const eventSchema = require('../event/eventSchema')
 
@@ -19,7 +20,7 @@ module.exports = new GraphQLObjectType({
 		id: {type: GraphQLID},
 		username: {type: GraphQLString},
 		email: {type: GraphQLString},
-		address: {type: GraphQLString}, // Get from hsl after
+		address: {type: userLocationSchema},
 		intrests: {type: new GraphQLList(GraphQLString)},
 		friends: {
 			type: new GraphQLList(friendSchema),
