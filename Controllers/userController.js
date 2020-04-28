@@ -131,7 +131,7 @@ const addReservation = async (id, event, date) => {
             const usr = await user.findById(id);
             const reservations = usr.reservations;
             reservations.push(newOne._id);
-            const updateEvent = await eventModel.updateOne({id:reserve.id}, {reservedById: id})
+            await eventModel.updateOne({id:reserve.id}, {reservedById: id});
             return await user.findByIdAndUpdate(id, {reservations: reservations}, {new:true});
           } else {
               return new Error("Already reserved!");
@@ -149,12 +149,10 @@ const removeReservation = async (id, reservationId) => {
     const usr = await user.findById(id);
     const reservations = usr.reservations;
     const rsrvGet = await reservation.findOne({user: id, id: reservationId})
-    //console.log(rsrvGet._id)
-    //console.log(typeof rsrvGet._id)
     const newReservation= reservations.filter(e => e.toString() !== rsrvGet._id.toString());
-    //console.log(newReservation);
     console.log("Removed reservationId: ", reservationId, 'from: ', usr.username);
     await reservation.findByIdAndDelete(rsrvGet._id.toString());
+    await eventModel.findOneAndUpdate({id:reservationId}, {$pull: {reservedById: id}});
     return await user.findByIdAndUpdate(id, {reservations: newReservation}, {new:true});
   } catch (e) {
     return new Error(e.message);
