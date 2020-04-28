@@ -58,8 +58,7 @@ module.exports = new GraphQLObjectType({
             },        
             resolve: async (parent, args) => {
                 try {
-                    let data =await reservation.find({'user': args.id})      
-                    console.log(data);
+                    let data =await reservation.find({'user': args.id, 'id': parent.id})      
                     return data[0];
                 } catch (error) {
                     return new Error(e.message)                    

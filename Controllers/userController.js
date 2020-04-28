@@ -103,7 +103,7 @@ const removeFriend = async (id, friends) => {
 }
 
 // Create new reservation document then save to users list.
-const addReservation = async (id, event) => {
+const addReservation = async (id, event, date) => {
     try {
         const reserve = await eventModel.findOne({id: event});
         const alreadyReserved = await reservation.findOne({
@@ -123,6 +123,7 @@ const addReservation = async (id, event) => {
               tags: reserve.tags,
               event_dates: reserve.event_dates,
               user: id,
+              date: date
             });
             //Add marker to event field
 
@@ -136,6 +137,8 @@ const addReservation = async (id, event) => {
               return new Error("Already reserved!");
           }     
       } catch (e) {
+        console.log("here");
+        console.log(e.message);
         return new Error(e.message);
       }
 }

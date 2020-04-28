@@ -222,11 +222,13 @@ const Mutation = new GraphQLObjectType ({
       type: cleanUserSchema,
       description: 'Add reservations for user.',
       args: {
-        id: {type: GraphQLID},
-        reservation: {type: GraphQLString},
+        id: {type: new GraphQLNonNull(GraphQLID)},
+        reservation: {type: new GraphQLNonNull(GraphQLString)},
+        date: {type: new GraphQLNonNull(GraphQLString)}
       },
       resolve: async (parent, args) => {
-        return await userController.addReservation(args.id, args.reservation);
+        console.log(args.id, args.reservation, args.date)
+        return await userController.addReservation(args.id, args.reservation, args.date);
       }
     },
     UserRemoveReservation: {

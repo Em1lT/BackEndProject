@@ -73,7 +73,8 @@ const reservationModel = new Schema({
             starting_day: Date,
             ending_day: Date,
             additional_description: String
-        }
+        },
+        date: String
     
     })
 
