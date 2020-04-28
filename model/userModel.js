@@ -7,7 +7,11 @@ const userModel = new Schema({
     password: {type: String, required: true },
     address: {
         street_address: {type: String, required: true },
-        coordinates: {type: [Number]}
+        locality: {type: String},
+        coordinates: {
+            lat: {type: Number},
+            lon: {type: Number}
+        }
     },
     intrests: [],
     friends: [],

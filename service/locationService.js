@@ -8,7 +8,7 @@ function getLocation(address) {
     console.log(url)
     return httpService.getData(url)
         .then((response) => {
-            return [response.data.bbox[0], response.data.bbox[1]]
+            return {coordinates: response.data.features[0].geometry.coordinates, locality: response.data.features[0].properties.locality}
         })
 }
 

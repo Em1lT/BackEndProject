@@ -21,17 +21,23 @@ const registerUser = async (data) => {
     try {
         const hashPw = await bcrypt.hash(data.password, saltRound);
         const loc = await location.getLocation(data.address)
-        console.log(loc)
+        if (!loc.locality == 'Espoo' || !loc.locality == 'Helsinki' || !loc.locality == 'Vantaa') {
+          loc.coordinates[1] = 60.1675;
+          loc.coordinates[0] = 24.9311;
+        }
         const newUser = new user ({
           username: data.username,
           email: data.email,
           password: hashPw,
           address: {
             street_address: data.address,
-            coordinates: loc
+            locality: loc.locality,
+            coordinates: {
+              lat: loc.coordinates[1],
+              lon: loc.coordinates[0]
+            }
           }
         })
-        //console.log('User with username: "' + data.username + '" registered!');
         return newUser.save();
       } catch (e) {
         return new Error(e.message);
@@ -40,12 +46,31 @@ const registerUser = async (data) => {
 
 const modifyUser = async (data) => {
     try {
-      console.log(data)
-      if (!data.password==null) {
-        datapassword = await bcrypt.hash(data.password, saltRound);
+      let update = {};
+      if (data.password!==undefined) {
+        const hash = await bcrypt.hash(data.password, saltRound);
+        update.password = hash
       }
-      console.log('Modifying data of user: ', data)
-      return await user.findByIdAndUpdate(data.id, data, {new:true});
+      if(data.address!==undefined) {
+        const loc = await location.getLocation(data.address)
+        if (!loc.locality == 'Espoo' || !loc.locality == 'Helsinki' || !loc.locality == 'Vantaa') {
+          loc.coordinates[1] = 60.1675;
+          loc.coordinates[0] = 24.9311;
+        }
+        const address= {
+          street_address: data.address,
+          locality: loc.locality,
+          coordinates: {
+            lat: loc.coordinates[1],
+            lon: loc.coordinates[0]
+          }
+        }
+        update.address = address
+      }
+      if(data.email!==undefined) {
+        update.email = data.email
+      }
+      return await user.findByIdAndUpdate(data.id, update, {new:true});
       } catch (e) {
       return new Error(e.message);
     }
