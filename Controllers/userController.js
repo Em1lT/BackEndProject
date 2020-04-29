@@ -44,32 +44,46 @@ const registerUser = async (data) => {
       }
 }
 
+const modifyCheck = async (pw, adrs, em) => {
+  let update = {};
+  // Check password field
+  if (pw== "") {
+    //Do Nothing
+  } else if (pw!==undefined) {
+    const hash = await bcrypt.hash(pw, saltRound);
+    update.password = hash
+  }
+  // Check address field
+  if (adrs == "") {
+    //Do Nothing
+  } else if(adrs!==undefined) {
+    const loc = await location.getLocation(adrs)
+    if (!loc.locality == 'Espoo' || !loc.locality == 'Helsinki' || !loc.locality == 'Vantaa') {
+      loc.coordinates[1] = 60.1675;
+      loc.coordinates[0] = 24.9311;
+    }
+    const address= {
+      street_address: adrs,
+      locality: loc.locality,
+      coordinates: {
+        lat: loc.coordinates[1],
+        lon: loc.coordinates[0]
+      }
+    }
+    update.address = address
+  }
+  // Check email field
+  if(em == "") {
+    //Do nothing
+  } else if(em!==undefined) {
+    update.email = em
+  }
+  return update;
+}
+
 const modifyUser = async (data) => {
     try {
-      let update = {};
-      if (data.password!==undefined) {
-        const hash = await bcrypt.hash(data.password, saltRound);
-        update.password = hash
-      }
-      if(data.address!==undefined) {
-        const loc = await location.getLocation(data.address)
-        if (!loc.locality == 'Espoo' || !loc.locality == 'Helsinki' || !loc.locality == 'Vantaa') {
-          loc.coordinates[1] = 60.1675;
-          loc.coordinates[0] = 24.9311;
-        }
-        const address= {
-          street_address: data.address,
-          locality: loc.locality,
-          coordinates: {
-            lat: loc.coordinates[1],
-            lon: loc.coordinates[0]
-          }
-        }
-        update.address = address
-      }
-      if(data.email!==undefined) {
-        update.email = data.email
-      }
+      const update = await modifyCheck(data.password, data.address, data.email);
       return await user.findByIdAndUpdate(data.id, update, {new:true});
       } catch (e) {
       return new Error(e.message);
