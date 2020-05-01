@@ -2,6 +2,7 @@
 const bcrypt = require('bcrypt');
 const saltRound= 12; 
 
+const location = require('../service/locationService');
 const user = require('../model/userModel');
 const eventModel = require('../model/helsinkiModel');
 const reservation = require('../model/reservationModel');
@@ -19,27 +20,71 @@ const getUser = async (id) => {
 const registerUser = async (data) => {
     try {
         const hashPw = await bcrypt.hash(data.password, saltRound);
+        const loc = await location.getLocation(data.address)
+        if (!loc.locality == 'Espoo' || !loc.locality == 'Helsinki' || !loc.locality == 'Vantaa') {
+          loc.coordinates[1] = 60.1675;
+          loc.coordinates[0] = 24.9311;
+        }
         const newUser = new user ({
           username: data.username,
           email: data.email,
           password: hashPw,
-          address: data.address,
+          address: {
+            street_address: data.address,
+            locality: loc.locality,
+            coordinates: {
+              lat: loc.coordinates[1],
+              lon: loc.coordinates[0]
+            }
+          }
         })
-        console.log('User with username: "' + data.username + '" registered!');
         return newUser.save();
       } catch (e) {
         return new Error(e.message);
       }
 }
 
+const modifyCheck = async (pw, adrs, em) => {
+  let update = {};
+  // Check password field
+  if (pw== "") {
+    //Do Nothing
+  } else if (pw!==undefined) {
+    const hash = await bcrypt.hash(pw, saltRound);
+    update.password = hash
+  }
+  // Check address field
+  if (adrs == "") {
+    //Do Nothing
+  } else if(adrs!==undefined) {
+    const loc = await location.getLocation(adrs)
+    if (!loc.locality == 'Espoo' || !loc.locality == 'Helsinki' || !loc.locality == 'Vantaa') {
+      loc.coordinates[1] = 60.1675;
+      loc.coordinates[0] = 24.9311;
+    }
+    const address= {
+      street_address: adrs,
+      locality: loc.locality,
+      coordinates: {
+        lat: loc.coordinates[1],
+        lon: loc.coordinates[0]
+      }
+    }
+    update.address = address
+  }
+  // Check email field
+  if(em == "") {
+    //Do nothing
+  } else if(em!==undefined) {
+    update.email = em
+  }
+  return update;
+}
+
 const modifyUser = async (data) => {
     try {
-      console.log(data)
-      if (!data.password==null) {
-        datapassword = await bcrypt.hash(data.password, saltRound);
-      }
-      console.log('Modifying data of user: ', data)
-      return await user.findByIdAndUpdate(data.id, data, {new:true});
+      const update = await modifyCheck(data.password, data.address, data.email);
+      return await user.findByIdAndUpdate(data.id, update, {new:true});
       } catch (e) {
       return new Error(e.message);
     }

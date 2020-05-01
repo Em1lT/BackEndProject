@@ -15,8 +15,8 @@ app.use((req, res, next) => {
   });
 
 app.use('/graphql', (req, res) => {
-    graphqlHTTP({schema: rootSchema, graphiql: true, context: {req, res}})(req,
-        res);
+    graphqlHTTP({schema: rootSchema, graphiql: true, context: {req, res}})
+    (req, res);
   });
   
 app.listen(port, () => console.log(`App has started and is running on port:  ${port}!`))

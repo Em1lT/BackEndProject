@@ -1,6 +1,6 @@
 // User schema without private data.
-const reservedEventSchema = require('../reservation/reservationSchema')
-const eventSchema = require('../event/eventSchema')
+const userLocationSchema = require('../user/userLocationSchema'); 
+const eventSchema = require('../event/eventSchema');
 const reservation = require('../../model/reservationModel');
 
 const {
@@ -18,6 +18,7 @@ module.exports = new GraphQLObjectType({
 		id: {type: GraphQLID},
 		username: {type: GraphQLString},
 		email: {type: GraphQLString},
+		address: {type: userLocationSchema},
 		intrests: {type: new GraphQLList(GraphQLString)},
 		reservations: {
 			type: new GraphQLList(eventSchema),
