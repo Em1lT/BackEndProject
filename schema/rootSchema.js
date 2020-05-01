@@ -249,7 +249,7 @@ const Mutation = new GraphQLObjectType ({
         reservation: {type: new GraphQLNonNull(GraphQLString)},
         date: {type: new GraphQLNonNull(GraphQLString)}
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
         const result = await authController.checkAuth(req, res);
         console.log(args.id, args.reservation, args.date)
         return await userController.addReservation(args.id, args.reservation, args.date);
@@ -287,6 +287,7 @@ const Mutation = new GraphQLObjectType ({
       resolve: async (parent, args) => {
         return await weatherController.update();
       }
+    }
     }
   })
 })
