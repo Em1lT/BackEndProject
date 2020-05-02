@@ -22,12 +22,8 @@ const renderSelf = async (users, excId) => {
   const friends = currentUser.friends;
   let notFriends = []
   for (let i in users) {
-    if (friends[i] !== undefined) {
-      for (let n in friends) {
-        if (users[i].id == friends[n]) {
-          //Already on friendslist dont push
-        }
-      }
+    if(friends.includes(users[i].id)) {
+      //Already on friendslist dont push
     } else if (users[i].id == excId) {
       // Current user dont push to list
     } else {
