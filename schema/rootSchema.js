@@ -95,16 +95,17 @@ const RootQuery = new GraphQLObjectType({
       }
     },
     users: {
-      type: new GraphQLList(friendSchema),
+      type: new GraphQLList(cleanUserSchema),
       description: 'Get users',
       args: {
-        nameIncludes: {type: GraphQLString}
+        excludeId: {type: GraphQLString},
+        nameIncludes: {type: new GraphQLNonNull(GraphQLString)}
       },
       resolve: async (parent, args, {req, res}) => {
         console.log(req.headers)
         const result = await authController.checkAuth(req, res);
         console.log(result)
-        return await userController.getUsers(args.nameIncludes);
+        return await userController.getUsers(args.excludeId, args.nameIncludes);
       }
     },
     userLogin: {

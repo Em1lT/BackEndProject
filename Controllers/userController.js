@@ -17,7 +17,27 @@ const getUser = async (id) => {
       }
 }
 
-const getUsers = async (nameIncludes) => {
+const renderSelf = async (users, excId) => {
+  const currentUser = await getUser(excId);
+  const friends = currentUser.friends;
+  let notFriends = []
+  for (let i in users) {
+    if (friends[i] !== undefined) {
+      for (let n in friends) {
+        if (users[i].id == friends[n]) {
+          //Already on friendslist dont push
+        }
+      }
+    } else if (users[i].id == excId) {
+      // Current user dont push to list
+    } else {
+      notFriends.push(users[i])
+    }
+  }
+  return notFriends
+}
+
+const getUsers = async (exclude, nameIncludes) => {
   try {
       let data = await user.find({
         $or: [
@@ -26,6 +46,8 @@ const getUsers = async (nameIncludes) => {
           {"address.locality": {$regex: nameIncludes}}
         ]
       });
+      console.log(data)
+      data = renderSelf(data, exclude);
       return data;
     } catch (e) {
       return new Error(e.message);
