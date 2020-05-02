@@ -8,6 +8,7 @@ const cleanUserSchema = require('./user/cleanUserSchema');
 const authController = require('../Controllers/authController');
 const userController = require('../Controllers/userController');
 const weatherController = require('../Controllers/weatherController');
+const friendSchema = require('../schema/user/friendSchema');
 
 const {
   GraphQLObjectType,
@@ -91,6 +92,19 @@ const RootQuery = new GraphQLObjectType({
         const result = await authController.checkAuth(req, res);
         console.log(result)
         return await userController.getUser(args.id);
+      }
+    },
+    users: {
+      type: new GraphQLList(friendSchema),
+      description: 'Get users',
+      args: {
+        nameIncludes: {type: GraphQLString}
+      },
+      resolve: async (parent, args, {req, res}) => {
+        console.log(req.headers)
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
+        return await userController.getUsers(args.nameIncludes);
       }
     },
     userLogin: {

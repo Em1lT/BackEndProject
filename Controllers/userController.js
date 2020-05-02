@@ -17,6 +17,21 @@ const getUser = async (id) => {
       }
 }
 
+const getUsers = async (nameIncludes) => {
+  try {
+      let data = await user.find({
+        $or: [
+          {"username": {$regex: nameIncludes}},
+          {"email": {$regex: nameIncludes}},
+          {"address.locality": {$regex: nameIncludes}}
+        ]
+      });
+      return data;
+    } catch (e) {
+      return new Error(e.message);
+    }
+}
+
 const registerUser = async (data) => {
     try {
         const hashPw = await bcrypt.hash(data.password, saltRound);
@@ -223,6 +238,7 @@ const getReservation = async (id) => {
 
 module.exports = {
     getUser,
+    getUsers,
     registerUser,
     modifyUser,
     deleteUser,
