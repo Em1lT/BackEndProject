@@ -189,6 +189,18 @@ const Mutation = new GraphQLObjectType ({
         return await userController.deleteUser(args.id);
       }
     },
+    UserRemoveReservation: {
+      type: cleanUserSchema,
+      description: 'Remove reservations for user.',
+      args: {
+        id: {type: new GraphQLNonNull(GraphQLID)},
+        reservation: {type: new GraphQLNonNull(GraphQLID)},
+      },
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        return await userController.removeReservation(args.id, args.reservation);
+      }
+    },
     UserAddIntrest: {
       type: cleanUserSchema,
       description: 'Add user intrest.',
@@ -254,19 +266,6 @@ const Mutation = new GraphQLObjectType ({
         console.log(args.id, args.reservation, args.date)
         return await userController.addReservation(args.id, args.reservation, args.date);
     },
-    UserRemoveReservation: {
-      type: cleanUserSchema,
-      description: 'Remove reservations for user.',
-      args: {
-        id: {type: GraphQLID, description: "user id"},
-        reservation: {type: GraphQLID, description: "reservation _id"},
-      },
-      resolve: async (parent, args, {req, res}) => {
-        const result = await authController.checkAuth(req, res);
-        console.log(result)
-        return await userController.removeReservation(args.id, args.reservation);
-      }
-    },
     deleteOldEvents: {
       type: GraphQLBoolean,
       description: 'Delete old reservations',
@@ -287,8 +286,8 @@ const Mutation = new GraphQLObjectType ({
       resolve: async (parent, args) => {
         return await weatherController.update();
       }
-    }
-    }
+    },
+  }
   })
 })
 
