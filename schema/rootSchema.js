@@ -86,7 +86,10 @@ const RootQuery = new GraphQLObjectType({
       args: {
         id: {type: new GraphQLNonNull (GraphQLID)}
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        console.log(req.headers)
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.getUser(args.id);
       }
     },
@@ -112,6 +115,7 @@ const RootQuery = new GraphQLObjectType({
         }
       }
     },
+    // Add checkAuth?
     reservations: {
       type: new GraphQLList(reservationSchema),
       description: "Get all reservations.",
@@ -145,8 +149,16 @@ const Mutation = new GraphQLObjectType ({
         password: {type: new GraphQLNonNull (GraphQLString)},
         address: {type: new GraphQLNonNull (GraphQLString)},
       },
-      resolve: async (parent, args) => {
-        return await userController.registerUser(args);
+      resolve: async (parent, args, {req, res}) => {
+        req.body = args;
+        await userController.registerUser(args);
+        const auth = await authController.login(req, res);
+        console.log({user: auth.user.username, token: auth.token});
+        return {
+          id: auth.user._id,
+          ...auth.user,
+          token: auth.token,
+        }
       }
     },
     // TODO: add checkAuth later, not yet since makes testing annoying
@@ -159,8 +171,9 @@ const Mutation = new GraphQLObjectType ({
         address: {type: GraphQLString},
         password: {type: GraphQLString},
       },
-      // resolve: async (parent, args, {req, res, checkAuth}
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.modifyUser(args);
       }
     },
@@ -170,8 +183,22 @@ const Mutation = new GraphQLObjectType ({
       args: {
         id: {type: new GraphQLNonNull(GraphQLID)}
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.deleteUser(args.id);
+      }
+    },
+    UserRemoveReservation: {
+      type: cleanUserSchema,
+      description: 'Remove reservations for user.',
+      args: {
+        id: {type: new GraphQLNonNull(GraphQLID)},
+        reservation: {type: new GraphQLNonNull(GraphQLID)},
+      },
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        return await userController.removeReservation(args.id, args.reservation);
       }
     },
     UserAddIntrest: {
@@ -181,7 +208,9 @@ const Mutation = new GraphQLObjectType ({
         id: {type: new GraphQLNonNull(GraphQLID)},
         intrests: {type: GraphQLString}
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.addIntrest(args.id, args.intrests);
       }
     },
@@ -192,7 +221,9 @@ const Mutation = new GraphQLObjectType ({
         id: {type: new GraphQLNonNull(GraphQLID)},
         intrests: {type: GraphQLString}
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.removeIntrest(args.id, args.intrests);
       }
     },
@@ -203,7 +234,9 @@ const Mutation = new GraphQLObjectType ({
         id: {type: new GraphQLNonNull(GraphQLID)},
         friends: {type: GraphQLID},
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.addFriend(args.id, args.friends);
       }
     },
@@ -214,7 +247,9 @@ const Mutation = new GraphQLObjectType ({
         id: {type: new GraphQLNonNull(GraphQLID)},
         friends: {type: GraphQLID}
       },
-      resolve: async(parent, args) => {
+      resolve: async(parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
         return await userController.removeFriend(args.id, args.friends);
       }
     },
@@ -226,21 +261,10 @@ const Mutation = new GraphQLObjectType ({
         reservation: {type: new GraphQLNonNull(GraphQLString)},
         date: {type: new GraphQLNonNull(GraphQLString)}
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
         console.log(args.id, args.reservation, args.date)
         return await userController.addReservation(args.id, args.reservation, args.date);
-      }
-    },
-    UserRemoveReservation: {
-      type: cleanUserSchema,
-      description: 'Remove reservations for user.',
-      args: {
-        id: {type: GraphQLID, description: "user id"},
-        reservation: {type: GraphQLID, description: "reservation _id"},
-      },
-      resolve: async (parent, args) => {
-        return await userController.removeReservation(args.id, args.reservation);
-      }
     },
     deleteOldEvents: {
       type: GraphQLBoolean,
@@ -262,7 +286,8 @@ const Mutation = new GraphQLObjectType ({
       resolve: async (parent, args) => {
         return await weatherController.update();
       }
-    }
+    },
+  }
   })
 })
 
