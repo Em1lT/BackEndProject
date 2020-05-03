@@ -132,7 +132,28 @@ const RootQuery = new GraphQLObjectType({
       resolve: (parent, args) => {
         return userController.getReservation(args.id);
       }
-    }
+    },
+    DeleteOldEvents: {
+      type: GraphQLBoolean,
+      description: 'Delete old reservations',
+      resolve: async (parent, args) => {
+        return await helsinkiApiController.DeleteOldOnes();
+      }
+    },
+    UpdateEvents: {
+      type: GraphQLString,
+      description: 'Updates the reservations',
+      resolve: async (parent, args) => {
+        return await helsinkiApiController.update();
+      }
+    },
+    UpdateWeather: {
+      type: GraphQLString,
+      description: 'Updates the weather',
+      resolve: async (parent, args) => {
+        return await weatherController.update();
+      }
+    },
   }
 });
 
@@ -265,28 +286,7 @@ const Mutation = new GraphQLObjectType ({
         const result = await authController.checkAuth(req, res);
         console.log(args.id, args.reservation, args.date)
         return await userController.addReservation(args.id, args.reservation, args.date);
-    },
-    DeleteOldEvents: {
-      type: GraphQLBoolean,
-      description: 'Delete old reservations',
-      resolve: async (parent, args) => {
-        return await helsinkiApiController.DeleteOldOnes();
-      }
-    },
-    UpdateEvents: {
-      type: GraphQLString,
-      description: 'Updates the reservations',
-      resolve: async (parent, args) => {
-        return await helsinkiApiController.update();
-      }
-    },
-    UpdateWeather: {
-      type: GraphQLString,
-      description: 'Updates the weather',
-      resolve: async (parent, args) => {
-        return await weatherController.update();
-      }
-    },
+    }
   }
   })
 })
