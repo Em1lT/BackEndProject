@@ -8,7 +8,10 @@ const graphqlHTTP = require('express-graphql');
 const passport = require('./utils/pass');
 const rootSchema = require('./schema/rootSchema');
 const db = require('./service/db');
+const helmet = require('helmet');
+
 app.use(cors());
+app.use(helmet());
 
 app.use((req, res, next) => {
     next();
