@@ -8,7 +8,6 @@ const cleanUserSchema = require('./user/cleanUserSchema');
 const authController = require('../Controllers/authController');
 const userController = require('../Controllers/userController');
 const weatherController = require('../Controllers/weatherController');
-const friendSchema = require('../schema/user/friendSchema');
 
 const {
   GraphQLObjectType,
@@ -96,7 +95,7 @@ const RootQuery = new GraphQLObjectType({
     },
     users: {
       type: new GraphQLList(cleanUserSchema),
-      description: 'Get users',
+      description: 'Get users, exclude user and friends by id',
       args: {
         excludeId: {type: new GraphQLNonNull(GraphQLString)},
         nameIncludes: {type: new GraphQLNonNull(GraphQLString)}
