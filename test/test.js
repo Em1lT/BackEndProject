@@ -1,9 +1,10 @@
 const moment = require("moment")
+require('dotenv').config()
 
 const chai = require("chai");
 const should = require('chai').should();
 const expect = chai.expect;
-const url = `http://localhost:3001/`;
+const url = process.env.API_URL;
 const request = require("supertest")(url);
 
 let id;
