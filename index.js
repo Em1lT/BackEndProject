@@ -12,6 +12,9 @@ const helmet = require('helmet');
 
 app.use(cors());
 app.use(helmet());
+app.use('/test',(req,res) => {
+  res.status(200).json("success")
+});
 
 app.use((req, res, next) => {
     next();
