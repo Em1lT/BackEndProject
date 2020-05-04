@@ -93,6 +93,20 @@ const RootQuery = new GraphQLObjectType({
         return await userController.getUser(args.id);
       }
     },
+    users: {
+      type: new GraphQLList(cleanUserSchema),
+      description: 'Get users, exclude user and friends by id',
+      args: {
+        excludeId: {type: new GraphQLNonNull(GraphQLString)},
+        nameIncludes: {type: new GraphQLNonNull(GraphQLString)}
+      },
+      resolve: async (parent, args, {req, res}) => {
+        console.log(req.headers)
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
+        return await userController.getUsers(args.excludeId, args.nameIncludes);
+      }
+    },
     userLogin: {
       type: userSchema,
       description: 'User login to receive token.',
@@ -182,7 +196,6 @@ const Mutation = new GraphQLObjectType ({
         }
       }
     },
-    // TODO: add checkAuth later, not yet since makes testing annoying
     UserModify: {
       type:  userSchema,
       description: 'Modify users email, address or password.',
@@ -227,7 +240,7 @@ const Mutation = new GraphQLObjectType ({
       description: 'Add user intrest.',
       args: {
         id: {type: new GraphQLNonNull(GraphQLID)},
-        intrests: {type: GraphQLString}
+        intrests: {type: new GraphQLNonNull(GraphQLString)}
       },
       resolve: async (parent, args, {req, res}) => {
         const result = await authController.checkAuth(req, res);
@@ -240,7 +253,7 @@ const Mutation = new GraphQLObjectType ({
       description: 'Remove intrests from user.',
       args: {
         id: {type: new GraphQLNonNull(GraphQLID)},
-        intrests: {type: GraphQLString}
+        intrests: {type: new GraphQLNonNull(GraphQLString)}
       },
       resolve: async (parent, args, {req, res}) => {
         const result = await authController.checkAuth(req, res);
@@ -253,7 +266,7 @@ const Mutation = new GraphQLObjectType ({
       description: 'Adds friends id to friends list.',
       args: {
         id: {type: new GraphQLNonNull(GraphQLID)},
-        friends: {type: GraphQLID},
+        friends: {type: new GraphQLNonNull(GraphQLID)},
       },
       resolve: async (parent, args, {req, res}) => {
         const result = await authController.checkAuth(req, res);
@@ -266,7 +279,7 @@ const Mutation = new GraphQLObjectType ({
       description: 'Remove friend from friends list.',
       args: {
         id: {type: new GraphQLNonNull(GraphQLID)},
-        friends: {type: GraphQLID}
+        friends: {type: new GraphQLNonNull(GraphQLID)}
       },
       resolve: async(parent, args, {req, res}) => {
         const result = await authController.checkAuth(req, res);
@@ -286,8 +299,42 @@ const Mutation = new GraphQLObjectType ({
         const result = await authController.checkAuth(req, res);
         console.log(args.id, args.reservation, args.date)
         return await userController.addReservation(args.id, args.reservation, args.date);
+    },
+    UserRemoveReservation: {
+      type: cleanUserSchema,
+      description: 'Remove reservations for user.',
+      args: {
+        id: {type: new GraphQLNonNull(GraphQLID), description: "user id"},
+        reservation: {type: new GraphQLNonNull(GraphQLID), description: "reservation _id"},
+      },
+      resolve: async (parent, args, {req, res}) => {
+        const result = await authController.checkAuth(req, res);
+        console.log(result)
+        return await userController.removeReservation(args.id, args.reservation);
+      }
+    },
+    deleteOldEvents: {
+      type: GraphQLBoolean,
+      description: 'Delete old reservations',
+      resolve: async (parent, args) => {
+        return await helsinkiApiController.DeleteOldOnes();
+      }
+    },
+    updateEvents: {
+      type: GraphQLString,
+      description: 'Updates the reservations',
+      resolve: async (parent, args) => {
+        return await helsinkiApiController.update();
+      }
+    },
+    updateWeather: {
+      type: GraphQLString,
+      description: 'Updates the weather',
+      resolve: async (parent, args) => {
+        return await weatherController.update();
+      }
     }
-  }
+    }
   })
 })
 

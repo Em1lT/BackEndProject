@@ -17,6 +17,40 @@ const getUser = async (id) => {
       }
 }
 
+// Removes excId user and its friends from result
+const renderSelf = async (users, excId) => {
+  const currentUser = await getUser(excId);
+  const friends = currentUser.friends;
+  let notFriends = []
+  for (let i in users) {
+    if(friends.includes(users[i].id)) {
+      //Already on friendslist dont push
+    } else if (users[i].id == excId) {
+      // Current user dont push to list
+    } else {
+      notFriends.push(users[i])
+    }
+  }
+  return notFriends
+}
+
+const getUsers = async (exclude, nameIncludes) => {
+  try {
+      let data = await user.find({
+        $or: [
+          {"username": {$regex: nameIncludes}},
+          {"email": {$regex: nameIncludes}},
+          {"address.locality": {$regex: nameIncludes}}
+        ]
+      });
+      console.log(data)
+      data = renderSelf(data, exclude);
+      return data;
+    } catch (e) {
+      return new Error(e.message);
+    }
+}
+
 const registerUser = async (data) => {
     try {
         const hashPw = await bcrypt.hash(data.password, saltRound);
@@ -31,7 +65,7 @@ const registerUser = async (data) => {
           password: hashPw,
           address: {
             street_address: data.address,
-            locality: loc.locality,
+            locality: loc.locality.toLowerCase(),
             coordinates: {
               lat: loc.coordinates[1],
               lon: loc.coordinates[0]
@@ -82,69 +116,69 @@ const modifyCheck = async (pw, adrs, em) => {
 }
 
 const modifyUser = async (data) => {
-    try {
-      const update = await modifyCheck(data.password, data.address, data.email);
-      return await user.findByIdAndUpdate(data.id, update, {new:true});
-      } catch (e) {
-      return new Error(e.message);
-    }
+  try {
+    const update = await modifyCheck(data.password, data.address, data.email);
+    return await user.findByIdAndUpdate(data.id, update, {new:true});
+    } catch (e) {
+    return new Error(e.message);
+  }
 }
 
 const deleteUser = async (id) => {
-    try {
-        console.log("Deleting user with id: ", id)
-        return await user.findByIdAndDelete(id);
-      } catch (e) {
-        return new Error(e.message);
-      }
+  try {
+    console.log("Deleting user with id: ", id)
+    return await user.findByIdAndDelete(id);
+  } catch (e) {
+    return new Error(e.message);
+  }
 }
 
 const addIntrest = async (id, intrest) => {
-    try {
-        const usr = await user.findById(id);
-        const newIntrest = usr.intrests;
-        newIntrest.push(intrest);
-        console.log("Added intrests to: ", intrest, "to: ", usr.username);
-        return await user.findByIdAndUpdate(id, {intrests: newIntrest}, {new:true})
-      } catch (e) {
-        return new Error(e.message);
-      }
+  try {
+    const usr = await user.findById(id);
+    const newIntrest = usr.intrests;
+    newIntrest.push(intrest);
+    console.log("Added intrests to: ", intrest, "to: ", usr.username);
+    return await user.findByIdAndUpdate(id, {intrests: newIntrest}, {new:true})
+  } catch (e) {
+    return new Error(e.message);
+  }
 }
 
 const removeIntrest = async (id, intrest) => {
-    try {
-        const usr = await user.findById(id);
-        const oldIntrest = usr.intrests;
-        const newIntrest= oldIntrest.filter(e => e !== intrest);
-        console.log("Removed intrest: ", intrest, 'to: ', usr.username);
-        return await user.findByIdAndUpdate(id, {intrests: newIntrest}, {new:true});
-      } catch (e) {
-        return new Error(e.message);
-      }
+  try {
+    const usr = await user.findById(id);
+    const oldIntrest = usr.intrests;
+    const newIntrest= oldIntrest.filter(e => e !== intrest);
+    console.log("Removed intrest: ", intrest, 'to: ', usr.username);
+    return await user.findByIdAndUpdate(id, {intrests: newIntrest}, {new:true});
+  } catch (e) {
+    return new Error(e.message);
+  }
 }
 
 const addFriend = async (id, friends) => {
-    try {
-        const usr = await user.findById(id);
-        const newList = usr.friends;
-        newList.push(friends);
-        console.log("Added friendId: ", friends, 'to: ', usr.username);
-        return await user.findByIdAndUpdate(id, {friends: newList}, {new:true});
-      } catch (e) {
-        return new Error(e.message);
-      }
+  try {
+    const usr = await user.findById(id);
+    const newList = usr.friends;
+    newList.push(friends);
+    console.log("Added friendId: ", friends, 'to: ', usr.username);
+    return await user.findByIdAndUpdate(id, {friends: newList}, {new:true});
+  } catch (e) {
+    return new Error(e.message);
+  }
 }
 
 const removeFriend = async (id, friends) => {
-    try {
-        const usr = await user.findById(id);
-        const oldfriends = usr.friends;
-        const newFriends= oldfriends.filter(e => e !== friends);
-        console.log("Removed friendId: ", friends, 'to: ', usr.username);
-        return await user.findByIdAndUpdate(id, {friends: newFriends}, {new:true});
-      } catch (e) {
-        return new Error(e.message);
-      }
+  try {
+    const usr = await user.findById(id);
+    const oldfriends = usr.friends;
+    const newFriends= oldfriends.filter(e => e !== friends);
+    console.log("Removed friendId: ", friends, 'to: ', usr.username);
+    return await user.findByIdAndUpdate(id, {friends: newFriends}, {new:true});
+  } catch (e) {
+    return new Error(e.message);
+  }
 }
 
 // Create new reservation document then save to users list.
@@ -223,6 +257,7 @@ const getReservation = async (id) => {
 
 module.exports = {
     getUser,
+    getUsers,
     registerUser,
     modifyUser,
     deleteUser,

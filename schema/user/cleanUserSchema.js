@@ -1,4 +1,3 @@
-// User schema without password field.
 const friendSchema = require('./friendSchema');
 const user = require('../../model/userModel');
 const userLocationSchema = require('./userLocationSchema');
