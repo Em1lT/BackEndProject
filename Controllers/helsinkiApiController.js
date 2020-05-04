@@ -17,7 +17,7 @@ const getAll = async (limit, today, nameIncludes) => {
           $gte: new Date(new Date().getTime() - dayConverter(1)).toISOString(),
         },
       })
-      .limit(3);
+      .limit(limit ? limit : 30);
     return data;
   }
 
@@ -50,7 +50,7 @@ const getAll = async (limit, today, nameIncludes) => {
           },
         ],
       })
-      .limit(20).sort("event_dates");
+      .limit(limit ? limit : 30).sort("event_dates");
     return data;
   }
 
