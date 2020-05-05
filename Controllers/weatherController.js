@@ -1,4 +1,16 @@
 'use strict';
+
+/**
+ * 
+ * Controller to weather db.
+ * 
+ * functions:
+ * getDates
+ * getOne
+ * update
+ * deleteOldAndsaveWeather
+ * createModel
+ */
 const moment = require('moment');
 const weatherApi = require('../service/WeatherService');
 const weatherModel = require('../model/weatherModel');

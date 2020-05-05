@@ -1,5 +1,13 @@
 const graphqlRequest = require("../service/graphlqlRequest");
 
+/**
+ * 
+ * Controller for getting data from the hsl api.
+ * 
+ * functions:
+ * getRoute
+ */
+
 const getRoute = async (from, to, date, time, routeNum) => {
 
   let formString;

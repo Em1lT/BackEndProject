@@ -1,4 +1,12 @@
 'use strict';
+/**
+ * 
+ * Controller to control authentication.
+ * functions:
+ * login 
+ * checkAuth
+ */
+
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 

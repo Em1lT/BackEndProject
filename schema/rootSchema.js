@@ -29,6 +29,10 @@ const {
   GraphQLNonNull,
 } = require("graphql");
 
+/**
+ * 
+ * Main Query
+ */
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   fields: {
@@ -137,7 +141,6 @@ const RootQuery = new GraphQLObjectType({
         }
       }
     },
-    // Add checkAuth?
     reservations: {
       type: new GraphQLList(reservationSchema),
       description: "Get all reservations.",
@@ -179,6 +182,10 @@ const RootQuery = new GraphQLObjectType({
   }
 });
 
+/**
+ * 
+ * Mutations
+ */
 const Mutation = new GraphQLObjectType ({
   name: 'MutationType',
   description: 'Mutate user.',

@@ -1,4 +1,17 @@
 "use strict";
+
+/**
+ * 
+ * Controller for getting events.
+ * 
+ * functions:
+ * getAll
+ * getOne
+ * searchAndUpdate 
+ * DeleteOldOnes
+ * createModel
+ */
+
 const helApi = require("../service/helsinkiApi");
 const helsinkiModel = require("../model/helsinkiModel");
 

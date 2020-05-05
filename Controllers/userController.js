@@ -1,4 +1,26 @@
 'use strict';
+
+/**
+ * 
+ * Controller to user.
+ * 
+ * functions:
+ * getUser
+ * getUsers
+ * registerUser
+ * modifyUser
+ * deleteUser
+ * addIntrest
+ * removeIntrest
+ * addFriend
+ * removeFriend
+ * addReservation
+ * removeReservation
+ * getReservations
+ * getReservation
+ */
+
+
 const bcrypt = require('bcrypt');
 const saltRound= 12; 
 
