@@ -148,7 +148,7 @@ const modifyUser = async (data) => {
 
 const deleteUser = async (id) => {
   try {
-    lo("Deleting user with id: ", id)
+    logger.info("Deleting user with id: ", id)
     return await user.findByIdAndDelete(id);
   } catch (e) {
     return new Error(e.message);

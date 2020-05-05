@@ -327,27 +327,6 @@ const Mutation = new GraphQLObjectType ({
         logger.info(result)
         return await userController.removeReservation(args.id, args.reservation);
       }
-    },
-    deleteOldEvents: {
-      type: GraphQLBoolean,
-      description: 'Delete old reservations',
-      resolve: async (parent, args) => {
-        return await helsinkiApiController.DeleteOldOnes();
-      }
-    },
-    updateEvents: {
-      type: GraphQLString,
-      description: 'Updates the reservations',
-      resolve: async (parent, args) => {
-        return await helsinkiApiController.update();
-      }
-    },
-    updateWeather: {
-      type: GraphQLString,
-      description: 'Updates the weather',
-      resolve: async (parent, args) => {
-        return await weatherController.update();
-      }
     }
     }
   })

@@ -186,6 +186,7 @@ describe("GraphQL", () => {
          })
         .expect(200)
         .end((err, res) => {
+          console.log(res.body);
           if (err) return done(err);
           res.body.data.UserDelete.should.have.property('id')
           done();

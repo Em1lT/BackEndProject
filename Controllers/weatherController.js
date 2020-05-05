@@ -18,9 +18,9 @@ const placeModel = require('../model/placeModel');
 const {logger} = require('../winston');
 
 function getDates(startDate, stopDate) {
-    var dateArray = [];
-    var currentDate = moment(startDate);
-    var stopDate = moment(stopDate);
+    let dateArray = [];
+    let currentDate = moment(startDate);
+    let stopDate = moment(stopDate);
     while (currentDate <= stopDate) {
         dateArray.push( moment(currentDate).format('YYYY-MM-DD') )
         currentDate = moment(currentDate).add(1, 'days');
