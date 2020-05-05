@@ -1,3 +1,10 @@
+
+/**
+ * 
+ * Model for helsinki api. This is modeled after what helsinkiApi gives us
+ * 
+ */
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 

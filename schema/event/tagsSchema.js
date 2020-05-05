@@ -1,3 +1,11 @@
+
+/**
+ * 
+ * Tags of the event
+ * Used in eventSchema.js
+ * 
+ */
+
 const {
     GraphQLObjectType,
     GraphQLString,

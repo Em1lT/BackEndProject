@@ -1,3 +1,11 @@
+
+/**
+ * 
+ * Location of the event
+ * Used in the eventSchema.js
+ * 
+ */
+
 const addressSchema = require('./addressSchema')
 const hslSchema = require('../hsl/hslSchema')
 const hslController = require('../../Controllers/hslController')

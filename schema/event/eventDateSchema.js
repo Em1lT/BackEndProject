@@ -1,3 +1,11 @@
+
+
+/**
+ * 
+ * Event dates
+ * Used in eventSchema.js
+ */
+
 const weatherSchema = require('../weather/weatherSchem')
 const weatherController = require('../../Controllers/weatherController');
 

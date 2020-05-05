@@ -1,3 +1,9 @@
+/**
+ * 
+ * Description of the event
+ * Used in eventSchema.js
+ */
+
 const imageSchema = require('./imageSchema')
 
 const {

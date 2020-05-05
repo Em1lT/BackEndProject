@@ -1,3 +1,9 @@
+
+/**
+ * 
+ * Model for user. Used in Register
+ */
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 

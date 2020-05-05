@@ -1,3 +1,11 @@
+
+/**
+ * 
+ * Name of the event in different languages(fi, en , sv, zh)
+ * Used in eventSchema.js
+ * 
+ */
+
 const {
     GraphQLObjectType,
     GraphQLID,

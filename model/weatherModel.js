@@ -1,3 +1,9 @@
+
+/**
+ * 
+ * Model for weather. Modeled after the data that is coming from the weatherbit
+ */
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 

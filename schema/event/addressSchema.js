@@ -1,3 +1,11 @@
+
+/**
+ * 
+ * Schema for address.
+ * Used in locationSchema
+ * 
+ */
+
 const {
     GraphQLObjectType,
     GraphQLString,

@@ -1,3 +1,10 @@
+
+
+/**
+ * Model for places. The weathers are attached to this one. so f.e(Espoo) 
+ * 
+ */
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 

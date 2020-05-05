@@ -1,4 +1,11 @@
-licenseSchema = require("./licenseSchema")
+
+/**
+ * 
+ * Events image
+ * Used in descriptionSchema.js
+ */
+
+const licenseSchema = require("./licenseSchema")
 
 const {
     GraphQLObjectType,

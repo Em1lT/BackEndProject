@@ -1,3 +1,9 @@
+
+/**
+ * Schema for creating a reservation
+ * 
+ */
+
 const locationSchema = require('../event/locationSchema')
 const nameSchema = require('../event/nameSchema')
 const sourceSchema = require('../event/sourceSchema')
