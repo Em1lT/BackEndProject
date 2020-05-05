@@ -6,12 +6,13 @@ const passportJWT = require('passport-jwt');
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 const userModel = require('../model/userModel');
+const {logger} = require('../winston');
 
 passport.use(new Strategy(
     async (username, password, done) => {
       try {
         const user = await userModel.findOne({username});
-        console.log('Local strategy login: ', user.username);
+        logger.info('Local strategy login: ', user.username);
         if (user === null) {
           return done(null, false, {message: 'Incorrect username.'});
         }
@@ -33,12 +34,12 @@ passport.use(new JWTStrategy({
       secretOrKey: 'eventSecret',
     },
     async (jwtPayload, done) => {
-      console.log('payload', jwtPayload);
+      logger.info('payload', jwtPayload);
       //find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
       try {
         const user = await userModel.findById(jwtPayload._id,
             '-password -__v');
-        console.log('pl user', user);
+        logger.info('pl user', user);
         if (user !== null) {
           return done(null, user);
         } else {

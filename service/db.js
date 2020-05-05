@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
+const {logger} = require('../winston');
 
 mongoose.connect(process.env.DB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-},(err => console.log("Connected to database")));
+},(err => logger.info("Connected to database")));

@@ -1,4 +1,5 @@
 const axios = require('axios');
+const {logger} = require('../winston');
 
 function getData(url) {
 
@@ -7,7 +8,7 @@ function getData(url) {
             .then((response) => {
                 resolve(response);
             }).catch((err) => {
-                console.log(err);
+                logger.info(err);
                 reject(err);
             })
     })

@@ -14,6 +14,7 @@
 
 const helApi = require("../service/helsinkiApi");
 const helsinkiModel = require("../model/helsinkiModel");
+const {logger} = require('../winston');
 
 const update = async (req, res) => {
   let data = await helApi.getAll();
@@ -104,15 +105,15 @@ const searchAndUpdate = async (data) => {
         let eventModel = createModel(item);
         try {
           await eventModel.save();
-          console.log("Item Added: " + item.name.fi);
+          logger.info("Item Added: " + item.name.fi);
         } catch (e) {
-          console.log("Error", e);
+          logger.error("Error", e);
         }
       } else {
-        console.log("no starting date " + item.name.fi);
+        logger.info("no starting date " + item.name.fi);
       }
     } else {
-      console.log("already in db: " + item.name.fi);
+      logger.info("already in db: " + item.name.fi);
     }
   });
   return added.length;
@@ -140,7 +141,7 @@ const DeleteOldOnes = async () => {
         });
       }
     } catch (e) {
-      console.log("error" + e);
+      logger.error("error" + e);
       return false;
     }
   });

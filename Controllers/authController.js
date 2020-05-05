@@ -9,13 +9,14 @@
 
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
+const {logger} = require('../winston');
 
 const login = (req, res) => {
     return new Promise((resolve, reject) => {
       passport.authenticate('local', {session: false},
           async (err, user, info) => {
             try {
-              console.log('controller info', info);
+                logger.info('controller info', info);
               if (err || !user) {
                 reject(info.message);
               }

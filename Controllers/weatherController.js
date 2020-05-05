@@ -15,6 +15,7 @@ const moment = require('moment');
 const weatherApi = require('../service/WeatherService');
 const weatherModel = require('../model/weatherModel');
 const placeModel = require('../model/placeModel');
+const {logger} = require('../winston');
 
 function getDates(startDate, stopDate) {
     var dateArray = [];
@@ -92,7 +93,7 @@ const update = async () => {
         }, {
             weatherIds: ids
         })
-        console.log(dbResponse);
+        logger.info(dbResponse);
         return "Weather updated";
     }
 }

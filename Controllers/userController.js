@@ -23,6 +23,7 @@
 
 const bcrypt = require('bcrypt');
 const saltRound= 12; 
+const {logger} = require('../winston');
 
 const location = require('../service/locationService');
 const user = require('../model/userModel');
@@ -65,7 +66,6 @@ const getUsers = async (exclude, nameIncludes) => {
           {"address.locality": {$regex: nameIncludes}}
         ]
       });
-      console.log(data)
       data = renderSelf(data, exclude);
       return data;
     } catch (e) {
@@ -148,7 +148,7 @@ const modifyUser = async (data) => {
 
 const deleteUser = async (id) => {
   try {
-    console.log("Deleting user with id: ", id)
+    lo("Deleting user with id: ", id)
     return await user.findByIdAndDelete(id);
   } catch (e) {
     return new Error(e.message);
@@ -160,7 +160,7 @@ const addIntrest = async (id, intrest) => {
     const usr = await user.findById(id);
     const newIntrest = usr.intrests;
     newIntrest.push(intrest);
-    console.log("Added intrests to: ", intrest, "to: ", usr.username);
+    logger.info("Added intrests to: ", intrest, "to: ", usr.username);
     return await user.findByIdAndUpdate(id, {intrests: newIntrest}, {new:true})
   } catch (e) {
     return new Error(e.message);
@@ -172,7 +172,7 @@ const removeIntrest = async (id, intrest) => {
     const usr = await user.findById(id);
     const oldIntrest = usr.intrests;
     const newIntrest= oldIntrest.filter(e => e !== intrest);
-    console.log("Removed intrest: ", intrest, 'to: ', usr.username);
+    logger.info("Removed intrest: ", intrest, 'to: ', usr.username);
     return await user.findByIdAndUpdate(id, {intrests: newIntrest}, {new:true});
   } catch (e) {
     return new Error(e.message);
@@ -184,7 +184,7 @@ const addFriend = async (id, friends) => {
     const usr = await user.findById(id);
     const newList = usr.friends;
     newList.push(friends);
-    console.log("Added friendId: ", friends, 'to: ', usr.username);
+    logger.info("Added friendId: ", friends, 'to: ', usr.username);
     return await user.findByIdAndUpdate(id, {friends: newList}, {new:true});
   } catch (e) {
     return new Error(e.message);
@@ -196,7 +196,7 @@ const removeFriend = async (id, friends) => {
     const usr = await user.findById(id);
     const oldfriends = usr.friends;
     const newFriends= oldfriends.filter(e => e !== friends);
-    console.log("Removed friendId: ", friends, 'to: ', usr.username);
+    logger.info("Removed friendId: ", friends, 'to: ', usr.username);
     return await user.findByIdAndUpdate(id, {friends: newFriends}, {new:true});
   } catch (e) {
     return new Error(e.message);
@@ -238,20 +238,19 @@ const addReservation = async (id, event, date) => {
               return new Error("Already reserved!");
           }     
       } catch (e) {
-        console.log("here");
-        console.log(e.message);
+        logger.error(e.message);
         return new Error(e.message);
       }
 }
 
 // Remove reservation document from collection and users list.
 const removeReservation = async (id, reservationId) => {
-  try {
+  try {    
     const usr = await user.findById(id);
     const reservations = usr.reservations;
     const rsrvGet = await reservation.findOne({user: id, id: reservationId})
     const newReservation= reservations.filter(e => e.toString() !== rsrvGet._id.toString());
-    console.log("Removed reservationId: ", reservationId, 'from: ', usr.username);
+    logger.info("Removed reservationId: ", reservationId, 'from: ', usr.username);
     await reservation.findByIdAndDelete(rsrvGet._id.toString());
     await eventModel.findOneAndUpdate({id:reservationId}, {$pull: {reservedById: id}});
     return await user.findByIdAndUpdate(id, {reservations: newReservation}, {new:true});

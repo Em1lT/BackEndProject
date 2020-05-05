@@ -14,6 +14,7 @@ const passport = require('./utils/pass');
 const rootSchema = require('./schema/rootSchema');
 const db = require('./service/db');
 const helmet = require('helmet');
+const {logger} = require('./winston');
 
 app.use(cors());
 app.use(helmet());
@@ -30,4 +31,6 @@ app.use('/graphql', (req, res) => {
     (req, res);
   });
   
-app.listen(port, () => console.log(`App has started and is running on port:  ${port}!`))
+app.listen(port, () => {  
+  logger.info(`App has started and is running on port:  ${port}!`)
+})
