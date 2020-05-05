@@ -1,5 +1,10 @@
 require('dotenv').config()
 
+/**
+ * 
+ * This is where the server starts. Uses helmet and Graphql
+ * 
+ */
 const express = require('express')
 const app = express()
 const port = 3001

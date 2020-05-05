@@ -1,3 +1,11 @@
+'use strict'
+
+/**
+ * 
+ * Root of the graphql Scema. Consists of RootQuery and mutation. SubSchemas are divide in to 5 category: event, hsl, reservation, user, weather 
+ * Check for README.md for list of queries and mutations
+ */
+
 const helsinkiApiController = require("../Controllers/helsinkiApiController");
 const eventSchema = require("./event/eventSchema");
 const hslSchema = require("../schema/hsl/hslSchema");

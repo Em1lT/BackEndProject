@@ -12,7 +12,7 @@ let token;
 let firstEvent;
 
 describe("Connection", () => {
-    it("Connection test", (done) => {
+    it("Connection to the server", (done) => {
       request
         .post("test")
         .expect(200)
@@ -35,7 +35,7 @@ describe("GraphQL", () => {
         if (err) return done(err);
         
         res.body.data.events.should.have.lengthOf(10);
-        firstEvent = res.body.data.events[0]._id
+        firstEvent = res.body.data.events[0].id
         for(let event of res.body.data.events) {
             event.should.have.property('id');
             event.should.have.property('name');
@@ -94,7 +94,7 @@ describe("GraphQL", () => {
         });
     });
   });
-/*
+
   describe("GraphQL", () => {
     it("Reserve a event", (done) => {
       request
@@ -102,26 +102,17 @@ describe("GraphQL", () => {
         .set("Authorization", "Bearer " + token)
         .send({ query: `
         mutation {
-            UserAddReservation(id: ${id} , reservation: ${firstEvent}, date:"1588610113") {
-                id
-            }
+          UserAddReservation(id: "${id}" , reservation: "${firstEvent}", date:"1588610113") {
+              id
           }
+      }
         `
          })
         .expect(200)
         .end((err, res) => {
-            console.log(
-            `
-                mutation {
-                    UserAddReservation(id: "${id}" , reservation: "${firstEvent}", date:"1588610113") {
-                        id
-                    }
-                }
-            `)
-            console.log(res.body)
-            console.log(JSON.stringify(res.body))
-
           if (err) return done(err);
+          res.body.data.UserAddReservation.should.have.property('id')
+
           done();
         });
     });
@@ -131,22 +122,23 @@ describe("GraphQL", () => {
     it("Delete a event", (done) => {
       request
         .post("Graphql")
+        .set("Authorization", "Bearer " + token)
         .send({ query: `
         mutation {
-            UserRemoveReservation(id: ${id} , reservation: ${firstEvent})
+            UserRemoveReservation(id: "${id}" , reservation: "${firstEvent}") {
+              id
+            }
           }
         `
          })
         .expect(200)
         .end((err, res) => {
-            console.log(res.body)
-            console.log(JSON.stringify(res.body))
-
           if (err) return done(err);
+          res.body.data.UserRemoveReservation.should.have.property('id')
           done();
         });
     });
-  });*/
+  });
 
   describe("GraphQL", () => {
     it("Get Your events", (done) => {

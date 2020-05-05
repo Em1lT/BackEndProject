@@ -1,3 +1,8 @@
+/**
+ * 
+ * Main schema for the event. Fetches the data from the mongoose db with fetch all command
+ */
+
 const locationSchema = require('./locationSchema')
 const nameSchema = require('./nameSchema')
 const sourceSchema = require('./sourceSchema')
