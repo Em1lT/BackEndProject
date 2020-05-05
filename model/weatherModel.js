@@ -1,4 +1,4 @@
-
+'use strict';
 /**
  * 
  * Model for weather. Modeled after the data that is coming from the weatherbit

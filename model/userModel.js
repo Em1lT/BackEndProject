@@ -1,4 +1,4 @@
-
+'use strict';
 /**
  * 
  * Model for user. Used in Register

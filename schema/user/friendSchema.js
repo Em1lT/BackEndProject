@@ -1,3 +1,4 @@
+'use strict';
 // User schema without private data.
 const userLocationSchema = require('../user/userLocationSchema'); 
 const eventSchema = require('../event/eventSchema');

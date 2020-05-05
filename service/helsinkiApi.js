@@ -1,3 +1,4 @@
+'use strict';
 let url = process.env.HEL_URL;
 let limitFilter = "limit=";
 let event = process.env.HEL_PARAM;

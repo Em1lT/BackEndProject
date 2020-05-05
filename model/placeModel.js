@@ -1,4 +1,4 @@
-
+'use strict';
 
 /**
  * Model for places. The weathers are attached to this one. so f.e(Espoo) 
