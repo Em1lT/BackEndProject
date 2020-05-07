@@ -1,3 +1,4 @@
+'use strict';
 const weatherObj = require('./weatherObj');
 
 const {

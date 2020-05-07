@@ -1,3 +1,4 @@
+'use strict';
 const graphqlClient = require('graphql-request');
 const {logger} = require('../winston');
 

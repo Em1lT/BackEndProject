@@ -1,4 +1,4 @@
-
+'use strict';
 /**
  * 
  * Tags of the event

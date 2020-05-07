@@ -1,5 +1,4 @@
-'use strict'
-
+'use strict';
 /**
  * 
  * Root of the graphql Scema. Consists of RootQuery and mutation. SubSchemas are divide in to 5 category: event, hsl, reservation, user, weather 

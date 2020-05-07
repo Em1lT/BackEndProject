@@ -1,3 +1,4 @@
+'use strict';
 let cron = require("node-cron");
 const { logger } = require("./winston");
 const helsinkiApiController = require("./Controllers/helsinkiApiController");

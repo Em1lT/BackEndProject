@@ -1,3 +1,4 @@
+'use strict';
 // User with password field, only used for registering, logging in or modifying.
 const reservationSchema = require('../reservation/reservationSchema')
 const friendSchema = require('./friendSchema');

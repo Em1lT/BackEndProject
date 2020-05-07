@@ -1,3 +1,4 @@
+'use strict';
 const urli = "https://api.digitransit.fi/geocoding/v1/search?text=";
 const httpService = require('./httpService');
 

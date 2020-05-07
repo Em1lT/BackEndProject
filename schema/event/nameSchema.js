@@ -1,4 +1,4 @@
-
+'use strict';
 /**
  * 
  * Name of the event in different languages(fi, en , sv, zh)

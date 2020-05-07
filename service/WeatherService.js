@@ -1,3 +1,4 @@
+'use strict';
 let url = process.env.WEATHER_URL;
 let apiKey = process.env.WEATHER_API;
 const httpService = require('./httpService');

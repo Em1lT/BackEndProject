@@ -1,4 +1,4 @@
-
+'use strict';
 /**
  * 
  * License for the images

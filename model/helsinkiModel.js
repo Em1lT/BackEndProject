@@ -1,4 +1,4 @@
-
+'use strict';
 /**
  * 
  * Model for helsinki api. This is modeled after what helsinkiApi gives us
