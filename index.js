@@ -13,6 +13,7 @@ const cors = require('cors');
 const graphqlHTTP = require('express-graphql');
 const rootSchema = require('./schema/rootSchema');
 const helmet = require('helmet');
+const passport = require('./utils/pass');
 const {logger} = require('./winston');
 const { startScheduledUpdates } = require('./adminTools');
 const db = require('./service/db');
