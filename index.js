@@ -15,6 +15,7 @@ const rootSchema = require('./schema/rootSchema');
 const helmet = require('helmet');
 const {logger} = require('./winston');
 const { startScheduledUpdates } = require('./adminTools');
+const db = require('./service/db');
 
 app.use(cors());
 app.use(helmet());
@@ -34,10 +35,10 @@ app.use('/graphql', (req, res) => {
     graphqlHTTP({schema: rootSchema, graphiql: true, context: {req, res}})
     (req, res);
 });
+
 if (process.env.NODE_ENV === 'production') {
   logger.info("cron job for updates now started");
   startScheduledUpdates();
-
 }
 
 app.listen(port, () => {  

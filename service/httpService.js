@@ -1,26 +1,25 @@
-'use strict';
+"use strict";
 
 /**
- * Basic axios service to fetch data from 
+ * Basic axios service to fetch data from
  */
 
-const axios = require('axios');
-const {logger} = require('../winston');
+const axios = require("axios");
+const { logger } = require("../winston");
 
-function getData(url) {
-
-    return new Promise((resolve, reject) => {
-        return axios.get(url)
-            .then((response) => {
-                resolve(response);
-            }).catch((err) => {
-                logger.info(err);
-                reject(err);
-            })
+const getData = async(url) => {
+  
+return await axios
+    .get(url)
+    .then((response) => {
+      return response;
     })
+    .catch((err) => {
+      logger.info(err);
+      return err;
+    });
 }
-
 
 module.exports = {
-    getData: getData
-}
+  getData: getData,
+};

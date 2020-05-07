@@ -10,18 +10,16 @@ let limitFilter = "limit=";
 let event = process.env.HEL_PARAM;
 const httpService = require('./httpService');
 
-function buildUrl() {
+const buildUrl = () => {
     let fullUrl = url + event + "?" + limitFilter + "1000";
     return fullUrl;
 }
 
-function getAll() {
+const getAll = async () =>  {
 
     let url = buildUrl();
-    return httpService.getData(url)
-        .then((response) => {
-            return response.data.data
-        })
+    let data = await httpService.getData(url);
+    return data.data.data;
 }
 
 module.exports = {

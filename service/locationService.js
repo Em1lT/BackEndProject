@@ -8,13 +8,11 @@ const httpService = require('./httpService');
 
 
 
-function getLocation(address) {
+const getLocation = async (address) => {
 
     let url = urli + address;
-    return httpService.getData(url)
-        .then((response) => {
-            return {coordinates: response.data.features[0].geometry.coordinates, locality: response.data.features[0].properties.locality}
-        })
+    let data = await httpService.getData(url)
+    return {coordinates: data.data.features[0].geometry.coordinates, locality: data.data.features[0].properties.locality}
 }
 
 module.exports = {

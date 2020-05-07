@@ -10,12 +10,12 @@ let apiKey = process.env.WEATHER_API;
 const httpService = require('./httpService');
 
 
-function buildUrl() {
+const buildUrl = () => {
     let fullUrl = url + "&key="+ apiKey;
     return fullUrl;
 }
 
-async function getAll() {
+const getAll = async () => {
 
     let url = await buildUrl();
     let response = await httpService.getData(url)
