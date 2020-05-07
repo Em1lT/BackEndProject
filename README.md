@@ -27,7 +27,7 @@ This is the backend designed to serve data from our own mongoose database. There
 # Contributors
 
 + Emil Toivainen
-+ 
++ Timurhan Çalisiyor
 
 
 # Graphql queries & mutations
