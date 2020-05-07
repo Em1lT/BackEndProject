@@ -1,4 +1,11 @@
 'use strict';
+
+/**
+ * 
+ * This is the admin tools only used in production. It uses a cron to schedule the database updates.
+ * You can also do it manually
+ * 
+ */
 let cron = require("node-cron");
 const { logger } = require("./winston");
 const helsinkiApiController = require("./Controllers/helsinkiApiController");

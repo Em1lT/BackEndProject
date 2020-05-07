@@ -1,3 +1,10 @@
+
+/**
+ * 
+ * Test is the backend working properly
+ * 
+ */
+
 const moment = require("moment")
 require('dotenv').config()
 

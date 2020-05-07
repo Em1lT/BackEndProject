@@ -1,6 +1,11 @@
 'use strict';
+/**
+ * Service to get data from hsl
+ * https://api.digitransit.fi
+ */
 const urli = "https://api.digitransit.fi/geocoding/v1/search?text=";
 const httpService = require('./httpService');
+
 
 
 function getLocation(address) {

@@ -1,3 +1,15 @@
+
+/**
+ * Basic logger with wintston
+ * Path where logging:
+ *    ./logs/info.log
+ *    ./logs/error.log 
+ *  
+ * 2 levels are in use:
+ *  info
+ *  error 
+ */
+
 const { createLogger, transports, format, addColors,  } = require("winston");
 
 const logger = createLogger({

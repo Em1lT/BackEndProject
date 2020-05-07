@@ -1,4 +1,10 @@
 'use strict';
+
+/**
+ * Service to call helsinkiApi Which is a free api to use
+ * http://open-api.myhelsinki.fi/
+ */
+
 let url = process.env.HEL_URL;
 let limitFilter = "limit=";
 let event = process.env.HEL_PARAM;
