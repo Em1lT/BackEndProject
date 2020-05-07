@@ -8,12 +8,10 @@ require('dotenv').config()
  */
 const express = require('express')
 const app = express()
-const port = 3001
+const port = 3001;
 const cors = require('cors');
 const graphqlHTTP = require('express-graphql');
-const passport = require('./utils/pass');
 const rootSchema = require('./schema/rootSchema');
-const db = require('./service/db');
 const helmet = require('helmet');
 const {logger} = require('./winston');
 const { startScheduledUpdates } = require('./adminTools');
@@ -24,9 +22,13 @@ app.use('/test',(req,res) => {
   res.status(200).json("success")
 });
 
-app.use((req, res, next) => {
-    next();
-  });
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+if (process.env.NODE_ENV === 'production') {
+  require('./production')(app);
+  port = 3000;
+} else {
+  require('./development')(app);
+}
 
 app.use('/graphql', (req, res) => {
     graphqlHTTP({schema: rootSchema, graphiql: true, context: {req, res}})
