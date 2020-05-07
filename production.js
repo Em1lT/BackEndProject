@@ -11,5 +11,4 @@ app.use ((req, res, next) => {
       res.redirect('https://' + req.headers.host + req.url);
     }
   });
-    app.listen(3000);
   }
