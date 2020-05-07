@@ -15,6 +15,7 @@ const rootSchema = require('./schema/rootSchema');
 const helmet = require('helmet');
 const {logger} = require('./winston');
 const { startScheduledUpdates } = require('./adminTools');
+const db = require('./service/db');
 
 app.use(cors());
 app.use(helmet());
