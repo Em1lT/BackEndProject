@@ -1,7 +1,7 @@
 let cron = require("node-cron");
-const { logger } = require("./winston");
-const helsinkiApiController = require("./Controllers/helsinkiApiController");
-const weatherController = require("./Controllers/weatherController");
+const { logger } = require("../winston");
+const helsinkiApiController = require("../Controllers/helsinkiApiController");
+const weatherController = require("../Controllers/weatherController");
 
 
 module.exports = startScheduledUpdates = async () => {

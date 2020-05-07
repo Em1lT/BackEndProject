@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Admin map</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+
+    #messages {
+      width: 0%;
+    }
+    #page {
+      display: flex;
+    }
+  </style>
+</head>
+
+  <body>
+    <div class="">
+  <div id="map"></div>
+  <p>moi</p>
+</div>
+  <script>
+    const socket = io();
+  </script>
+  <script>
+    let url;
+
+    $(document).ready(() => {
+
+      mapboxgl.accessToken = 'pk.eyJ1IjoiZW0xbHQiLCJhIjoiY2sxNmN3d2l1MDJ0ejNjcGJscjI3dWpheCJ9.11koZVBLPLKsPfVwBuKaBQ';
+      var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+        center: [24.953813, 60.183742], // starting position [lng, lat]
+        zoom: 9 // starting zoom
+      });
+      map.on('load', function () {
+
+        map.addSource('event', { type: 'geojson', data: { type: "Point", "coordinates": [24.953813, 60.183742] } });
+        map.addLayer({
+          'id': 'event',
+          'type': 'symbol',
+          'source': 'event',
+          'layout': {
+            'icon-image': 'rocket-15'
+          }
+        });
+        socket.on('event', (msg) => {
+          map.getSource('event').setData(msg.coordinates);
+          map.flyTo({
+            center: msg.coordinates,
+            speed: 0.5,
+            zoom: 4
+          });
+        });
+
+      });
+    });
+
+
+  </script>
+</body>
+
+</html>

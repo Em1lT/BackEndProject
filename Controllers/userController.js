@@ -29,6 +29,7 @@ const location = require('../service/locationService');
 const user = require('../model/userModel');
 const eventModel = require('../model/helsinkiModel');
 const reservation = require('../model/reservationModel');
+const { sendMessage } = require('../utils/socket.io.js')
 
 // User functions
 const getUser = async (id) => {
@@ -232,6 +233,7 @@ const addReservation = async (id, event, date) => {
             const usr = await user.findById(id);
             const reservations = usr.reservations;
             reservations.push(newOne._id);
+            sendMessage({ "coordinates": [reserve.location.lon, reserve.location.lat],"event":reserve.name ,"user": usr.username});
             await eventModel.updateOne({id:reserve.id}, {reservedById: id});
             return await user.findByIdAndUpdate(id, {reservations: reservations}, {new:true});
           } else {

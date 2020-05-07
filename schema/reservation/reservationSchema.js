@@ -32,5 +32,6 @@ module.exports = new GraphQLObjectType({
         description: {type: descriptionSchema},
         tags: {type: new GraphQLList(tagsSchema)},
         event_dates: {type: eventDateSchema},
+        date: {type: GraphQLString}
 	})
 })

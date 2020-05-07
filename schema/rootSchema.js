@@ -53,7 +53,6 @@ const RootQuery = new GraphQLObjectType({
       },
       resolve: async (parent, args, {req, res}) => {
       logger.info(req.method+" "+req.originalUrl+" "+ " ip:("+ req.ip +") (Authorization: "+req.get("Authorization") +")")
-
         return await helsinkiApiController.getAll(
           args.limit,
           args.today,
