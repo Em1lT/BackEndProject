@@ -11,7 +11,7 @@ const { logger } = require("./winston");
 const helsinkiApiController = require("./Controllers/helsinkiApiController");
 const weatherController = require("./Controllers/weatherController");
 
-startScheduledUpdates = async () => {
+const startScheduledUpdates = async () => {
   let crons = cron.schedule("0 18 * * *", async () => {
     await helsinkiApiController.DeleteOldOnes();
     await helsinkiApiController.update();
