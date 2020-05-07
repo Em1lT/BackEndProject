@@ -1,4 +1,10 @@
 'use strict';
+
+/**
+ * 
+ * Service to communicate with weatherBit
+ * https://www.weatherbit.io/account/login
+ */
 let url = process.env.WEATHER_URL;
 let apiKey = process.env.WEATHER_API;
 const httpService = require('./httpService');

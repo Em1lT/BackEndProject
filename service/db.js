@@ -1,4 +1,9 @@
 'use strict';
+/**
+ * Database connection
+ * 
+ */
+
 const mongoose = require('mongoose')
 const {logger} = require('../winston');
 
