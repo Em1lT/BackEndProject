@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = (app) => {
+module.exports = (app, port) => {
 
 app.enable('trust proxy');
 
@@ -11,5 +11,6 @@ app.use ((req, res, next) => {
       res.redirect('https://' + req.headers.host + req.url);
     }
   });
-    app.listen(3000);
-  }
+  console.log(port);
+  app.listen(port);
+}

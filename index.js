@@ -8,7 +8,6 @@ require('dotenv').config()
  */
 const express = require('express')
 const app = express()
-const port = 3001;
 const cors = require('cors');
 const graphqlHTTP = require('express-graphql');
 const rootSchema = require('./schema/rootSchema');
@@ -26,10 +25,11 @@ app.use('/test',(req,res) => {
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 if (process.env.NODE_ENV === 'production') {
-  require('./production')(app);
-  port = 3000;
+  const port = 3000;
+  require('./production')(app,port);
 } else {
-  require('./development')(app);
+  const port = 3001;
+  require('./development')(app,port);
 }
 
 app.use('/graphql', (req, res) => {
@@ -41,7 +41,3 @@ if (process.env.NODE_ENV === 'production') {
   logger.info("cron job for updates now started");
   startScheduledUpdates();
 }
-
-app.listen(port, () => {  
-  logger.info(`App has started and is running on port:  ${port}!`)
-})
