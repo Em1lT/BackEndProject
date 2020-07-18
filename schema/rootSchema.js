@@ -49,6 +49,9 @@ const RootQuery = new GraphQLObjectType({
         nameIncludes: {
           type: GraphQLString,
         },
+        city: {
+          type: GraphQLString,  
+        }
       },
       resolve: async (parent, args, {req, res}) => {
       logger.info(req.method+" "+req.originalUrl+" "+ " ip:("+ req.ip +") (Authorization: "+req.get("Authorization") +")")
@@ -56,7 +59,8 @@ const RootQuery = new GraphQLObjectType({
         return await helsinkiApiController.getAll(
           args.limit,
           args.today,
-          args.nameIncludes
+          args.nameIncludes,
+          args.city
         );
       },
     },
