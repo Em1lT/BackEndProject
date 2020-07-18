@@ -27,8 +27,8 @@ const getAll = async (limit, today, nameIncludes) => {
     let data = await helsinkiModel
       .find({
         "event_dates.starting_day": {
-          $lte: new Date(new Date().getTime() + dayConverter(7)).toISOString(),
-          $gte: new Date(new Date().getTime() - dayConverter(1)).toISOString(),
+          $lte: getDateForward(15),
+          $gte:  getDayBackWard(1),
         },
       })
       .limit(limit ? limit : 30);
@@ -41,11 +41,11 @@ const getAll = async (limit, today, nameIncludes) => {
         $and: [
           {
             "event_dates.starting_day": {
-                $lte: new Date(new Date().getTime() + dayConverter(15)).toISOString(),
+                $lte: getDateForward(15),
               },
               "event_dates.ending_day": {
-                $lte: new Date(new Date().getTime() + dayConverter(15)).toISOString(),
-                $gte: new Date(new Date().getTime() - dayConverter(1)).toISOString(),
+                $lte: getDateForward(15),
+                $gte: getDayBackWard(1),
               },
           },
           {
@@ -72,11 +72,11 @@ const getAll = async (limit, today, nameIncludes) => {
   let data = await helsinkiModel
     .find({
       "event_dates.starting_day": {
-        $lte: new Date(new Date().getTime() + dayConverter(15)).toISOString(),
+        $lte: getDateForward(15),
       },
       "event_dates.ending_day": {
-        $lte: new Date(new Date().getTime() + dayConverter(15)).toISOString(),
-        $gte: new Date(new Date().getTime() - dayConverter(1)).toISOString(),
+        $lte: getDateForward(15),
+        $gte: getDayBackWard(1),
       },
     })
     .limit(limit ? limit : 10)
@@ -84,9 +84,6 @@ const getAll = async (limit, today, nameIncludes) => {
   return data;
 };
 
-const dayConverter = (days) => {
-  return days * 60 * 60 * 24 * 1000;
-};
 const getOne = async (name) => {
   //getOne from the database with the id
   let data = await helsinkiModel.find({ id: name });
@@ -225,6 +222,19 @@ const createModel = (item) => {
   });
   return eventModel;
 };
+
+const dayConverter = (days) => {
+  return days * 60 * 60 * 24 * 1000;
+};
+
+const getDateForward = (days) => {
+  return new Date(new Date().getTime() + dayConverter(days)).toISOString()
+}
+
+const getDayBackWard = (days) => {
+  return new Date(new Date().getTime() - dayConverter(days)).toISOString()
+}
+
 
 module.exports = {
   update,
