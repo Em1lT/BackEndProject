@@ -32,21 +32,6 @@ const getAll= async (limit, today, nameIncludes, city) => {
   return data;
 };
 
-  //Find events that start 2 weeks into the future -> this because we will only also to show them weather included
-  let data = await helsinkiModel
-    .find({
-      "event_dates.starting_day": {
-        $lte: getDateForward(15),
-      },
-      "event_dates.ending_day": {
-        $lte: getDateForward(15),
-        $gte: getDayBackWard(1),
-      },
-    })
-    .limit(limit ? limit : 10)
-    .sort("event_dates");
-  return data;
-};
 
 const getOne = async (name) => {
   //getOne from the database with the id
