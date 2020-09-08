@@ -19,6 +19,9 @@ const db = require('./service/db');
 
 app.use(cors());
 app.use(helmet());
+
+
+
 app.use('/test',(req,res) => {
   res.status(200).json("success")
 });
@@ -31,10 +34,18 @@ if (process.env.NODE_ENV === 'production') {
   const port = 3001;
   require('./development')(app,port);
 }
-
+app.use((req,res, next) => {
+  logger.info(req.method+" "+req.originalUrl+" "+ " ip:("+ req.ip +") (Authorization: "+req.get("Authorization") +")")
+  next();
+})
 app.use('/graphql', (req, res) => {
     graphqlHTTP({schema: rootSchema, graphiql: true, context: {req, res}})
     (req, res);
+});
+
+
+app.use('/*',(req,res, next) => {
+  res.json("Interface not found")
 });
 
 if (process.env.NODE_ENV === 'production') {

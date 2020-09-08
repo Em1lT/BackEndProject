@@ -20,6 +20,7 @@ const {
     GraphQLString,
     GraphQLInt,
     GraphQLList,
+    GraphQLBoolean,
 } = require(
     'graphql');
 
@@ -57,17 +58,22 @@ module.exports = new GraphQLObjectType({
         updatedAt: {
             type: GraphQLString
         },
-        reservedById: {
-            type: reservedEventSchema,
+        reservedByUser: {
+            type: GraphQLBoolean,
             args: {
                 id: {type: GraphQLID},
             },        
             resolve: async (parent, args) => {
                 try {
-                    let data =await reservation.find({'user': args.id, 'id': parent.id})      
-                    return data[0];
+                    let data =await reservation.find({'user': args.id, 'id': parent.id})  
+                    if(Array.isArray(data) && data.length) {
+                        console.log(data);
+                        return true;
+                    } else {
+                        return false;
+                    }
                 } catch (error) {
-                    return new Error(e.message)                    
+                    return false;                    
                 }
             }
         },
